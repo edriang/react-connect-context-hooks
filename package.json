@@ -1,6 +1,6 @@
 {
   "name": "react-connect-context-hooks",
-  "version": "0.1.8",
+  "version": "0.1.10",
   "description": "Redux-like connect bindings to use along useReducer + useContext.",
   "keywords": [
     "react",
@@ -11,9 +11,10 @@
     "actions",
     "state management"
   ],
-  "author": "adrian-marcelo-gallardo",
+  "author": "edriang",
   "license": "MIT",
-  "repository": "adrian-marcelo-gallardo/react-connect-context-hooks",
+  "homepage": "https://edriang.github.io/react-connect-context-hooks",
+  "repository": "edriang/react-connect-context-hooks",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "jsnext:main": "dist/index.es.js",

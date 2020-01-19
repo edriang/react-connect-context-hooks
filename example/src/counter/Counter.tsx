@@ -22,12 +22,12 @@ const Counter: React.FC<CounterProps> = ({ count, increment, decrement }) => {
         <div>
             <h1>Counter Component</h1>
             <p>
-                <b>Count: </b>
-                <span>{count}</span>
-            </p>
-            <p>
                 <b>Amount:</b>
                 <input type="number" value={amount} onChange={updateAmount} />
+            </p>
+            <p>
+                <b>Count: </b>
+                <span>{count}</span>
             </p>
             <hr />
             <button onClick={() => decrement(amount)}>Decrement</button>

@@ -1,5 +1,23 @@
 # react-connect-context-hooks
 
+<!-- TOC -->
+
+- [react-connect-context-hooks](#react-connect-context-hooks)
+    - [Install](#install)
+    - [What?](#what)
+    - [Why?](#why)
+    - [How?](#how)
+    - [Example](#example)
+    - [Example Actions](#example-actions)
+    - [Example Reducer](#example-reducer)
+    - [Selections](#selections)
+        - [Selections using Array](#selections-using-array)
+        - [Selections using Object](#selections-using-object)
+        - [Selections using Function](#selections-using-function)
+    - [License](#license)
+
+<!-- /TOC -->
+
 ## Install
 
 ```bash
@@ -32,7 +50,7 @@ This library allows implementing good practices for your custom state-management
 
 `createContextProvider` receives a reducer function, a initial-state object, and a key-value object with actions; it will return a `Provider` component that will be used to wrap your application wherever you need to provide access to context. It will return the `Context` object to you can use to create custom `connect` HOC or `useContext`.
 
-## Usage:
+## Example
 
 Take a look at the following example:
 
@@ -145,7 +163,7 @@ export default () => {
 As you can see, `useCounter` receives the same `options` object that the HOC, so you can pick what to select from the store.
 
 
-## Actions
+## Example Actions
 
 If you are familiar to `redux-thunk` then you will be familiar to actions here too.
 
@@ -184,7 +202,7 @@ export {
 };
 ```
 
-## Reducer
+## Example Reducer
 
 This is a regular reducer function; you can check documentation about `React.useReducer` to get more familiar with it.
 
@@ -286,4 +304,4 @@ Lastly, you can specify a `Function` to create the resulting object from the `st
 
 ## License
 
-MIT © [adrian-marcelo-gallardo](https://github.com/adrian-marcelo-gallardo)
+MIT © [Adrián Gallardo](https://github.com/edriang)
