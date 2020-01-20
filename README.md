@@ -14,6 +14,8 @@
         - [Selections using Array](#selections-using-array)
         - [Selections using Object](#selections-using-object)
         - [Selections using Function](#selections-using-function)
+    - [Advanced Usecases](#advanced-usecases)
+        - [Combining Contexts](#combining-contexts)
     - [License](#license)
 
 <!-- /TOC -->
@@ -291,7 +293,7 @@ One special behavior using Object is that it allows to specify a getter `Functio
 
 ### Selections using Function
 
-Lastly, you can specify a `Function` to create the resulting object from the `state`. Like in the previous example (this function will also receive the components `props` if used with the connect HOC); e.g.:
+Lastly, you can specify a `Function` to create the resulting object from the `state`. This function will also receive the components `props` when used with the connect HOC; e.g.:
 ```js
 (state, props) => {
   return {
@@ -301,6 +303,46 @@ Lastly, you can specify a `Function` to create the resulting object from the `st
   }
 }
 ```
+If your store is not a key/value map, then the other selection methods won't be useful; but you can use `Function` to retrieve the whole state of the store; e.g.:
+```js
+// Let's asume that the store contains a `todos` Array, instead of defining an object/map { todos }:
+(todos) => todos
+```
+
+## Advanced Usecases
+
+### Combining Contexts
+
+There are scenarios in which you'll need to access to one or more `Context` to gather all the values your component needs. In such case, instead manually nesting your connect HOC, you can use `mergedConnectContextFactory` helper function; e.g.:
+
+```js
+import { MainContext } from './main/provider';
+import { TodosContext } from './todos/provider';
+
+const TodosComponent = ({ mainStateProp, todosStateProp, todosActionProp, anotherProp}) => { } 
+
+const withMainAndTodos = mergedConnectContextFactory([MainContext, TodosContext]);
+
+export default withMainAndTodos(TodosComponent, {
+  stateMappers: ['mainStateProp', 'todosStateProp'],
+  actionMappers: ['todosActionProp'],
+  afterMerge: mergedProps => {
+    const { mainStateProp, todosStateProp } = mergedProps;
+
+    return {
+      anotherProp: `Mixing ${mainStateProp} and ${todosStateProp}`;
+    }
+  }
+});
+```
+
+By using this helper function you can just specify a single `ConnectContextOptions` options defining the state-props and actions you wan't to select from the `Context` objects you provided (note that selections will be looked at both contexts, and the later will override the former in case of collision, so order os `Context` might be important).
+
+In addition to regular state and action selectors you can define an option called `afterMerge`. This option receives a function that will be called with the resulting merged props, consisting of the combination of your selected states and actions and the Component's props.
+
+This function should return additional (or overriding) properties that will be combined and finally passed down to the `Component`.
+
+For a concrete example, take a look at `TodoList` component in `examples/todomvc` folder.
 
 ## License
 

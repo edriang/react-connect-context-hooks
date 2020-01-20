@@ -12,15 +12,6 @@ const mockedProps = {
     lastName: 'Doe',
 };
 
-// const mockActions = {
-//     increment: (dispatch: any) => () => {
-//         dispatch({
-//             type: 'INCREMENT',
-//             payload: 2,
-//         });
-//     }
-// }
-
 describe('selectValues', () => {
     describe('selectFromArray', () => {
         it('selects keys from data using array', () => {

@@ -21,9 +21,12 @@ export type MapperFunction = (state: KeyValue, props?: KeyValue) => KeyValue;
 
 export type Mapper = string[] | KeyValueMap | MapperFunction;
 
+export type AfterMergeCallback = (mergedProps: KeyValue) => KeyValue;
+
 export type ConnectContextOptions = {
     stateMappers?: Mapper;
     actionMappers?: Mapper;
+    afterMerge?: AfterMergeCallback;
 }
 
 export type ConenctContextFactory = (Component: React.ComponentType<any> | React.FC<any>, options: ConnectContextOptions) => React.FunctionComponent;
