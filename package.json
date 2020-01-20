@@ -29,7 +29,7 @@
     "start": "rollup -c -w",
     "prepare": "npm run build",
     "predeploy": "cd example && npm install && npm run build",
-    "deploy": "gh-pages -d example/build"
+    "deploy": "gh-pages -d examples/todomvc/build"
   },
   "dependencies": {
     "lodash": "^4.17.15"
