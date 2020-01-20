@@ -4,6 +4,7 @@
 
 - [react-connect-context-hooks](#react-connect-context-hooks)
     - [Install](#install)
+    - [Sample App](#sample-app)
     - [What?](#what)
     - [Why?](#why)
     - [How?](#how)
@@ -25,6 +26,10 @@
 ```bash
 npm install --save react-connect-context-hooks
 ```
+
+## Sample App
+
+[https://edriang.github.io/react-connect-context-hooks](https://edriang.github.io/react-connect-context-hooks)
 
 ## What?
 
@@ -53,6 +58,8 @@ This library allows implementing good practices for your custom state-management
 `createContextProvider` receives a reducer function, a initial-state object, and a key-value object with actions; it will return a `Provider` component that will be used to wrap your application wherever you need to provide access to context. It will return the `Context` object to you can use to create custom `connect` HOC or `useContext`.
 
 ## Example
+
+***Note:**In this section we will review the basic functionality provided by the library. The snippets are based in the example application located in `examples/counter`. For a more complete/advanced use-case take a look at `examples/todomvc`.*
 
 Take a look at the following example:
 
