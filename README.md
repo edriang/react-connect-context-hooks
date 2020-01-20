@@ -14,7 +14,7 @@
         - [Selections using Array](#selections-using-array)
         - [Selections using Object](#selections-using-object)
         - [Selections using Function](#selections-using-function)
-    - [Advanced Usecases](#advanced-usecases)
+    - [Advanced Use-cases](#advanced-use-cases)
         - [Combining Contexts](#combining-contexts)
     - [License](#license)
 
@@ -309,7 +309,7 @@ If your store is not a key/value map, then the other selection methods won't be 
 (todos) => todos
 ```
 
-## Advanced Usecases
+## Advanced Use-cases
 
 ### Combining Contexts
 
