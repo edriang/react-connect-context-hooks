@@ -1,6 +1,6 @@
 {
   "name": "react-connect-context-hooks",
-  "version": "0.1.10",
+  "version": "0.2.0",
   "description": "Redux-like connect bindings to use along useReducer + useContext.",
   "keywords": [
     "react",
@@ -28,7 +28,7 @@
     "build": "rollup -c",
     "start": "rollup -c -w",
     "prepare": "npm run build",
-    "predeploy": "cd example && npm install && npm run build",
+    "predeploy": "cd examples/todomvc && npm install && npm run build",
     "deploy": "gh-pages -d examples/todomvc/build"
   },
   "dependencies": {
