@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.js": "/static/js/main.00a0a82f.chunk.js",
-    "main.js.map": "/static/js/main.00a0a82f.chunk.js.map",
-    "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
-    "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
-    "static/css/2.8dd801da.chunk.css": "/static/css/2.8dd801da.chunk.css",
-    "static/js/2.adf0655e.chunk.js": "/static/js/2.adf0655e.chunk.js",
-    "static/js/2.adf0655e.chunk.js.map": "/static/js/2.adf0655e.chunk.js.map",
-    "index.html": "/index.html",
-    "precache-manifest.070bc8b88cd6a70981d2c516c24dbd28.js": "/precache-manifest.070bc8b88cd6a70981d2c516c24dbd28.js",
-    "service-worker.js": "/service-worker.js",
-    "static/css/2.8dd801da.chunk.css.map": "/static/css/2.8dd801da.chunk.css.map"
+    "main.js": "/react-connect-context-hooks/static/js/main.00a0a82f.chunk.js",
+    "main.js.map": "/react-connect-context-hooks/static/js/main.00a0a82f.chunk.js.map",
+    "runtime~main.js": "/react-connect-context-hooks/static/js/runtime~main.e4a6958c.js",
+    "runtime~main.js.map": "/react-connect-context-hooks/static/js/runtime~main.e4a6958c.js.map",
+    "static/css/2.8dd801da.chunk.css": "/react-connect-context-hooks/static/css/2.8dd801da.chunk.css",
+    "static/js/2.adf0655e.chunk.js": "/react-connect-context-hooks/static/js/2.adf0655e.chunk.js",
+    "static/js/2.adf0655e.chunk.js.map": "/react-connect-context-hooks/static/js/2.adf0655e.chunk.js.map",
+    "index.html": "/react-connect-context-hooks/index.html",
+    "precache-manifest.e503a903f1494ad99da6ee0e8c0e5939.js": "/react-connect-context-hooks/precache-manifest.e503a903f1494ad99da6ee0e8c0e5939.js",
+    "service-worker.js": "/react-connect-context-hooks/service-worker.js",
+    "static/css/2.8dd801da.chunk.css.map": "/react-connect-context-hooks/static/css/2.8dd801da.chunk.css.map"
   }
 }
