@@ -17,15 +17,17 @@ export type CreateContextProviderReturn = [
     React.Context<any>
 ]
 
-export type MapperFunction = (state: KeyValue, props?: KeyValue) => KeyValue;
+export type SelectorFunction = (state: KeyValue, props?: KeyValue) => KeyValue;
 
-export type Mapper = string[] | KeyValueMap | MapperFunction;
+export type Selector = string[] | KeyValueMap | SelectorFunction;
 
 export type AfterMergeCallback = (mergedProps: KeyValue) => KeyValue;
 
 export type ConnectContextOptions = {
-    stateMappers?: Mapper;
-    actionMappers?: Mapper;
+    stateSelectors?: Selector;
+    actionSelectors?: Selector;
+    stateMappers?: Selector;
+    actionMappers?: Selector;
     afterMerge?: AfterMergeCallback;
 }
 

@@ -4,7 +4,7 @@ import { mergedConnectContextFactory } from 'react-connect-context-hooks';
 import TodoItem from './TodoItem';
 import { TodosContext } from '../provider';
 import { MainContext } from '../../main/provider';
-import { VISIBILITY_FILTERS } from '../../main/constants';
+import filterVisibleTodos from '../utils/filterVisibleTodos';
 
 import { Todo } from '../../../typings';
 
@@ -32,18 +32,12 @@ const TodoList: React.FC<TodoListProps> = ({ todos, editTodo, deleteTodo, comple
 const withMainAndTodos = mergedConnectContextFactory([MainContext, TodosContext]);
 
 export default withMainAndTodos(TodoList, {
-  stateMappers: ['todos', 'visibilityFilter'],
-  actionMappers: ['editTodo', 'deleteTodo', 'completeTodo'],
-  afterMerge(mergedProps: any) {
-    const { todos, visibilityFilter } = mergedProps;
+  stateSelectors: ['todos', 'visibilityFilter'],
+  actionSelectors: ['editTodo', 'deleteTodo', 'completeTodo'],
+  afterMerge: ({ todos, visibilityFilter }: any) => {
+    const filteredTodos = filterVisibleTodos(todos, visibilityFilter);
 
-    if (visibilityFilter === VISIBILITY_FILTERS.SHOW_ALL) {
-      return { todos };
-    }
-    if (visibilityFilter === VISIBILITY_FILTERS.SHOW_ACTIVE) {
-      return { todos: todos.filter((todo: Todo) => !todo.completed) };
-    }
-    return { todos: todos.filter((todo: Todo) => todo.completed) };
+    return { todos: filteredTodos };
   }
 });
 

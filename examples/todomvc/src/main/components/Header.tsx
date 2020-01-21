@@ -25,7 +25,7 @@ const Header: React.FC<HeaderProps> = ({ addTodo }) => (
 );
 
 export default withTodos(Header, {
-  actionMappers: ['addTodo'],
+  actionSelectors: ['addTodo'],
 });
 
 export {

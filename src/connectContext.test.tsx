@@ -86,7 +86,7 @@ describe('connectContextFactory', () => {
     it('creates connect HOC', () => {
         const Component = ({ testProp }: any) => testProp;
         const ComponentWithCounter = withCounter(Component, {
-            stateMappers: ['testProp']
+            stateSelectors: ['testProp']
         });
         const { getByText } = render(<CounterProvider><ComponentWithCounter/></CounterProvider>);
         
@@ -96,7 +96,7 @@ describe('connectContextFactory', () => {
     it('passes down any property from Component', () => {
         const Component = ({ amount }: any) => amount;
         const ComponentWithCounter: React.FC<any> = withCounter(Component, {
-            stateMappers: ['testProp']
+            stateSelectors: ['testProp']
         });
         const { getByText } = render(<CounterProvider><ComponentWithCounter amount={amount}/></CounterProvider>);
         
@@ -106,8 +106,8 @@ describe('connectContextFactory', () => {
     it('allows calling actions', () => {
         const withCounter = connectContextFactory(CounterContext);
         const ComponentWithCounter: React.FC<any> = withCounter(CountComponent, {
-            stateMappers: ['count'],
-            actionMappers: ['increment'],
+            stateSelectors: ['count'],
+            actionSelectors: ['increment'],
         });
         const { getByTestId, getByText } = render(<CounterProvider><ComponentWithCounter amount={amount} /></CounterProvider>);
         const button = getByTestId('button');
@@ -131,7 +131,7 @@ describe('useConnectedContextFactory', () => {
     it('creates connect hook', () => {
         const ComponentWithCounter = () => {
             const {testProp} = useCounter({
-                stateMappers: ['testProp'],
+                stateSelectors: ['testProp'],
             });
             
             return <MockComponent testProp={testProp} />
@@ -144,8 +144,8 @@ describe('useConnectedContextFactory', () => {
     it('creates connect hook with access to actions', () => {
         const ComponentWithCounter = () => {
             const {count, increment} = useCounter({
-                stateMappers: ['count'],
-                actionMappers: ['increment'],
+                stateSelectors: ['count'],
+                actionSelectors: ['increment'],
             });
             
             return <CountComponent count={count} increment={increment} amount={amount} />
@@ -182,7 +182,7 @@ describe('mergedConnectContextFactory', () => {
     it('loads values from both contexts', () => {
         const Component = ({testProp, testProp2}: any) => `${testProp}-${testProp2}`;
         const ComponentWithCounter = withBothContexts(Component, {
-            stateMappers: ['testProp', 'testProp2']
+            stateSelectors: ['testProp', 'testProp2']
         });
 
         const { getByText } = render(
@@ -198,7 +198,7 @@ describe('mergedConnectContextFactory', () => {
 
     it('overrides first context value with second one', () => {
         const ComponentWithCounter = withBothContexts(MockComponent, {
-            stateMappers: ['testProp', 'testProp:testProp2']
+            stateSelectors: ['testProp', 'testProp:testProp2']
         });
 
         const { getByText } = render(
@@ -215,7 +215,7 @@ describe('mergedConnectContextFactory', () => {
     it('overrides props with afterMerge callback', () => {
         const Component = ({testProp, testProp2}: any) => `${testProp}-${testProp2}`;
         const ComponentWithCounter = withBothContexts(Component, {
-            stateMappers: ['testProp', 'testProp2'],
+            stateSelectors: ['testProp', 'testProp2'],
             afterMerge: (state: any) => ({
                 testProp: state.testProp.toUpperCase(),
                 testProp2: state.testProp2.toUpperCase(),

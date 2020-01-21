@@ -22,10 +22,10 @@ const Link: React.FC<LinkProps> = ({ active, children, setVisibilityFilter }) =>
 )
 
 export default withMain(Link, {
-  stateMappers: {
+  stateSelectors: {
     active: ({ visibilityFilter }: MainState, props: any) => props.filter === visibilityFilter,
   },
-  actionMappers: {
+  actionSelectors: {
     setVisibilityFilter: ({ setVisibilityFilter }: any, props: any) => () => setVisibilityFilter(props.filter),
   },
 });

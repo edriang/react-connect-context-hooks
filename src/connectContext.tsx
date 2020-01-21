@@ -6,7 +6,6 @@ import {
     ConnectContextOptions,
     ConenctContextFactory,
     KeyValue,
-    AfterMergeCallback,
 } from './typings';
 
   
@@ -30,11 +29,12 @@ function useConnectedContextFactory<T = any>(Context: React.Context<T>) {
     }
 }
 
-function getContextSelection<T = any>(Context: React.Context<T>, { stateMappers, actionMappers }: ConnectContextOptions = {}, props: KeyValue = {}): KeyValue {
-    const context: any = React.useContext(Context);;
+function getContextSelection<T = any>(Context: React.Context<T>, options: ConnectContextOptions = {}, props: KeyValue = {}): KeyValue {
+    const context: any = React.useContext(Context);
+    const { stateSelectors, actionSelectors } = normalizedContextOptions(options);
 
-    const state = selectValues(stateMappers, context.state, props);
-    const actions = selectValues(actionMappers, context.actions, props);
+    const state = selectValues(stateSelectors, context.state, props);
+    const actions = selectValues(actionSelectors, context.actions, props);
 
     return { ...state, ...actions };
 }
@@ -68,6 +68,19 @@ function assignDefined(target: KeyValue, source: KeyValue) {
     });
 
     return target;
+}
+
+function normalizedContextOptions(options: ConnectContextOptions): ConnectContextOptions {
+    const normalized: KeyValue = {};
+
+    if (options.stateMappers) {
+        normalized.stateSelectors = options.stateMappers;
+    }
+    if (options.actionMappers) {
+        normalized.actionSelectors = options.actionMappers;
+    }
+
+    return Object.assign({}, options, normalized);
 }
 
 export default connectContext;

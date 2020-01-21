@@ -11,7 +11,6 @@
   "dependencies": {
     "classnames": "^2.2.6",
     "react": "^16.8.6",
-    "react-connect-context-hooks": "^0.1.10",
     "react-dom": "^16.8.6",
     "reselect": "^4.0.0",
     "todomvc-app-css": "^2.2.0"

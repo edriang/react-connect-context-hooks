@@ -2,7 +2,7 @@ import { useCounter } from './provider';
 
 export default () => {
     const { count } = useCounter({
-      stateMappers: ['count'],
+      stateSelectors: ['count'],
     });
   
     console.warn(`Count is: ${count}`);

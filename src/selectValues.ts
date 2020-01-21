@@ -1,12 +1,12 @@
 import get from 'lodash/get';
 
 import {
-    Mapper,
+    Selector,
     KeyValueMap,
     KeyValue,
 } from './typings';
 
-const selectValues = (selection: Mapper = [], data: KeyValue = {}, props: KeyValue = {}) => {
+const selectValues = (selection: Selector = [], data: KeyValue = {}, props: KeyValue = {}) => {
     if (selection instanceof Array) {
         return selectFromArray(selection, data);
     }
@@ -17,7 +17,7 @@ const selectValues = (selection: Mapper = [], data: KeyValue = {}, props: KeyVal
         return selection(data, props);
     }
 
-    throw 'Mapper should be plain object, array or function';
+    throw 'Selector should be plain object, array or function';
 };
 
 function selectFromArray(selection: string[], data: KeyValue = {}): KeyValue {

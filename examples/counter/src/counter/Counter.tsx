@@ -41,6 +41,6 @@ export {
 }
 
 export default withCounter(Counter, {
-    stateMappers: ['count'],
-    actionMappers: ['increment:incrementAction', 'decrement:decrementAction'],
+    stateSelectors: ['count'],
+    actionSelectors: ['increment:incrementAction', 'decrement:decrementAction'],
 });

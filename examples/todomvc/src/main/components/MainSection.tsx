@@ -40,11 +40,11 @@ const MainSection: React.FC<MainSectionProps> = ({ todosCount, completedCount, c
 )
 
 export default withTodos(MainSection, {
-  stateMappers: {
+  stateSelectors: {
     todosCount: ({ todos }: TodosState) => todos.length,
     completedCount: ({ todos }: TodosState) => todos.filter(todo => todo.completed).length,
   },
-  actionMappers: ['completeAllTodos', 'clearCompleted'],
+  actionSelectors: ['completeAllTodos', 'clearCompleted'],
 });
 
 export {

@@ -139,8 +139,8 @@ export {
 
 // Export the connected component as default
 export default withCounter(Counter as React.ComponentType<any>, {
-  stateMappers: ['count'],
-  actionMappers: ['increment', 'decrement'],
+  stateSelectors: ['count'],
+  actionSelectors: ['increment', 'decrement'],
 });
 
 ```
@@ -160,7 +160,7 @@ If you need to access the store from a hook, then you would use:
 
 export default () => {
     const { count } = useCounter({
-      stateMappers: ['count'],
+      stateSelectors: ['count'],
     });
   
     console.warn(`Count is: ${count}`);
@@ -178,7 +178,7 @@ If you are familiar to `redux-thunk` then you will be familiar to actions here t
 
 Actions are functions that receives a single `dispatch` parameter and returns a new function which will use the `dispatch` function to trigger some action.
 
-Note that the returned function can declare any number of arguments (even zero) and this is the function that will get selected when you use `actionMappers` option.
+Note that the returned function can declare any number of arguments (even zero) and this is the function that will get selected when you use `actionSelectors` option.
 
 Example of actions:
 
@@ -253,7 +253,7 @@ export {
 
 Similar to how `redux` work, the idea of the connected HOC or hook is to get access only to the portion of the state that is relevant to it.
 
-You can use selections by specifying `stateMappers` and/or `actionMappers`.
+You can use selections by specifying `stateSelectors` and/or `actionSelectors`.
 
 A selection can be defined in different ways, either using an Array, an Object or a Function:
 
@@ -331,8 +331,8 @@ const TodosComponent = ({ mainStateProp, todosStateProp, todosActionProp, anothe
 const withMainAndTodos = mergedConnectContextFactory([MainContext, TodosContext]);
 
 export default withMainAndTodos(TodosComponent, {
-  stateMappers: ['mainStateProp', 'todosStateProp'],
-  actionMappers: ['todosActionProp'],
+  stateSelectors: ['mainStateProp', 'todosStateProp'],
+  actionSelectors: ['todosActionProp'],
   afterMerge: mergedProps => {
     const { mainStateProp, todosStateProp } = mergedProps;
 
