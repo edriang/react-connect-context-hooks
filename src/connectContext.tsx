@@ -50,12 +50,23 @@ function mergedConnectContextFactory(contexts: React.Context<any>[]): ConenctCon
 
             const mergedProps = {...selection, ...props};
 
+            if (options.computedSelectors) {
+                Object.entries(options.computedSelectors).forEach(([key, value]) => {
+                    const [fn, deps] = value;
+                    const depValues = deps.map(dep => mergedProps[dep]);
+
+                    mergedProps[key] = React.useMemo(() => fn(...depValues), depValues);
+                });
+            }
+
+            // DEPRECATED
             if (options.afterMerge) {
                 const afterMergeProps = Object.assign({}, mergedProps, options.afterMerge(mergedProps) || {});
 
                 return <Component {...afterMergeProps} />;
             }
-            return <Component {...selection} {...props} />;
+            
+            return <Component {...mergedProps} />;
         });
     };
 };
@@ -73,6 +84,7 @@ function assignDefined(target: KeyValue, source: KeyValue) {
 function normalizedContextOptions(options: ConnectContextOptions): ConnectContextOptions {
     const normalized: KeyValue = {};
 
+    // DEPRECATED
     if (options.stateMappers) {
         normalized.stateSelectors = options.stateMappers;
     }

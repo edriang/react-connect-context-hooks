@@ -23,9 +23,20 @@ export type Selector = string[] | KeyValueMap | SelectorFunction;
 
 export type AfterMergeCallback = (mergedProps: KeyValue) => KeyValue;
 
+export type ComputedSelector = [
+    (...args: any) => any,
+    string[],
+];
+
+export type ComputedSelectors = {
+    [key: string]: ComputedSelector;
+}
+
 export type ConnectContextOptions = {
     stateSelectors?: Selector;
     actionSelectors?: Selector;
+    computedSelectors?: ComputedSelectors;
+
     stateMappers?: Selector;
     actionMappers?: Selector;
     afterMerge?: AfterMergeCallback;

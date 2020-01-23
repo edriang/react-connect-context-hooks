@@ -32,7 +32,8 @@
     "deploy": "gh-pages -d examples/todomvc/build"
   },
   "dependencies": {
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.15",
+    "memoizee": "^0.4.14"
   },
   "peerDependencies": {
     "@types/react": "^16.3.13",
@@ -44,6 +45,7 @@
     "@testing-library/react": "^9.4.0",
     "@types/jest": "^23.1.5",
     "@types/lodash": "^4.14.149",
+    "@types/memoizee": "^0.4.3",
     "@types/react": "^16.3.13",
     "@types/react-dom": "^16.0.5",
     "babel-core": "^6.26.3",

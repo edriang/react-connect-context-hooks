@@ -7,6 +7,7 @@ import MainProvider from './main/provider';
 import TodosProvider from './todos/provider';
 
 import 'todomvc-app-css/index.css';
+import './todoapp.scss';
 
 render(
   <MainProvider>
