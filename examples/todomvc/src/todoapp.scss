@@ -6,8 +6,15 @@ $light-text-1: rgba(white, 0.87);
 $light-text-2: rgba(white, 0.6);
 $light-text-3: rgba(white, 0.5);
 
+$transition-bg: background 0.5s ease-in-out;
+
 body {
     padding-top: 50px;
+    transition: background 0.5s ease-in-out;
+
+    .todoapp {
+        transition: background 0.3s ease-in-out;
+    }
 
     .theme-switcher {
         display: flex;
