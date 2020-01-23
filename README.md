@@ -17,6 +17,7 @@
         - [Selections using Function](#selections-using-function)
     - [Advanced Use-cases](#advanced-use-cases)
         - [Combining Contexts](#combining-contexts)
+        - [Deriving state with computedSelectors](#deriving-state-with-computedselectors)
     - [License](#license)
 
 <!-- /TOC -->
@@ -333,23 +334,51 @@ const withMainAndTodos = mergedConnectContextFactory([MainContext, TodosContext]
 export default withMainAndTodos(TodosComponent, {
   stateSelectors: ['mainStateProp', 'todosStateProp'],
   actionSelectors: ['todosActionProp'],
-  afterMerge: mergedProps => {
-    const { mainStateProp, todosStateProp } = mergedProps;
-
-    return {
-      anotherProp: `Mixing ${mainStateProp} and ${todosStateProp}`;
-    }
-  }
 });
 ```
 
 By using this helper function you can just specify a single `ConnectContextOptions` options defining the state-props and actions you wan't to select from the `Context` objects you provided (note that selections will be looked at both contexts, and the later will override the former in case of collision, so order os `Context` might be important).
 
-In addition to regular state and action selectors you can define an option called `afterMerge`. This option receives a function that will be called with the resulting merged props, consisting of the combination of your selected states and actions and the Component's props.
 
-This function should return additional (or overriding) properties that will be combined and finally passed down to the `Component`.
+### Deriving state with computedSelectors
 
-For a concrete example, take a look at `TodoList` component in `examples/todomvc` folder.
+It is a good practice to only add to your store the minimum data, and then derive or compute other properties your components might need.
+
+For example, in a TO-DO app, you might want to display different lists of `todos` based on some filter; e.g.: `ALL', 'COMPLETED', 'PENDING';
+
+In this case, instead of storing and having to maintain 3 different lists, a better approach is to store the full list and the filter you want to apply. Then, you create a `computedSelector` to compute the new state.
+
+Take a look at the following example:
+
+```js
+import { withTodos } from './todos/provider';
+
+const TodosComponent = ({ todos }) => { } 
+
+const filterVisibleTodos(todos, visibilityFilter) {
+  switch(visibilityFilter) {
+    case 'COMPLETED': return todos.filter(todo => todo.completed);
+    case 'UNCOMPLETED': return todos.filter(todo => !todo.completed);
+    default: return todos;
+  }
+}
+
+export default withTodos(TodosComponent, {
+  stateSelectors: ['todos', 'visibilityFilter'],
+  computedSelectors: {
+    todos: [filterVisibleTodos, ['todos', 'visibilityFilter']],
+  },
+});
+```
+
+The `computedSelectors` option receives an object.
+
+The keys on this object will be passed down as props; as you can see in the example, you can override a previous selected state-value if desired.
+
+On the other hand, the values expect to receive a tuple (array) with two elements: the first element is a function that will be called to compute your new property; the second element is an array of dependencies. In this array you should list only the properties needed by your function; the properties can be `props` that the object is receiving, previous selection (e.g. with `stateSelectors`) or previous returned values by other `computedSelectors` functions.
+
+**Important:** `computedSelectors` are memoized using `React.memo()`; this avoids re-computing a giving selector if none of the listed dependencies changed.
+
 
 ## License
 

@@ -6,14 +6,16 @@ import {
     ConnectContextOptions,
     ConenctContextFactory,
     KeyValue,
+    ComputedSelectors,
 } from './typings';
 
   
 function connectContext<T = any>(Context: React.Context<T>, Component: React.ComponentType, options: ConnectContextOptions = {}): React.FunctionComponent {
     return React.memo((props?: KeyValue) => {
         const selection = getContextSelection(Context, options, props);
+        const mergedProps = getMergedProps(selection, props, options.computedSelectors);
 
-        return <Component {...selection} {...props} />;
+        return <Component {...mergedProps} />;
     });
 };
 
@@ -48,16 +50,7 @@ function mergedConnectContextFactory(contexts: React.Context<any>[]): ConenctCon
                 assignDefined(selection, getContextSelection(Context, options, props));
             });
 
-            const mergedProps = {...selection, ...props};
-
-            if (options.computedSelectors) {
-                Object.entries(options.computedSelectors).forEach(([key, value]) => {
-                    const [fn, deps] = value;
-                    const depValues = deps.map(dep => mergedProps[dep]);
-
-                    mergedProps[key] = React.useMemo(() => fn(...depValues), depValues);
-                });
-            }
+            const mergedProps = getMergedProps(selection, props, options.computedSelectors);
 
             // DEPRECATED
             if (options.afterMerge) {
@@ -70,6 +63,19 @@ function mergedConnectContextFactory(contexts: React.Context<any>[]): ConenctCon
         });
     };
 };
+
+function getMergedProps(selection: KeyValue, props?: KeyValue, computedSelectors: ComputedSelectors = {}) {
+    const mergedProps = {...selection, ...props};
+
+    Object.entries(computedSelectors).forEach(([key, value]) => {
+        const [fn, deps] = value;
+        const depValues = deps.map(dep => mergedProps[dep]);
+
+        mergedProps[key] = React.useMemo(() => fn(...depValues), depValues);
+    });
+
+    return mergedProps;
+}
 
 function assignDefined(target: KeyValue, source: KeyValue) {
     Object.keys(source).map((key) => {
