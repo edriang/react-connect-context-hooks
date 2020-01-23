@@ -1,0 +1,82 @@
+$dark-1: #121212;
+$dark-2: rgba(white, 0.05);
+$dark-3: rgba(white, 0.12);;
+
+$light-text-1: rgba(white, 0.87);
+$light-text-2: rgba(white, 0.6);
+$light-text-3: rgba(white, 0.5);
+
+body {
+    padding-top: 50px;
+
+    .theme-switcher {
+        display: flex;
+        justify-content: center;
+        padding: 0 0 1em;
+    }
+
+    .footer {
+        padding: 15px;
+    }
+
+    .hidden-items {
+        text-align: center;
+        padding: 10px;
+    }
+}
+
+body.light {
+    .todoapp {
+        background: white;
+    }
+}
+
+body.dark {
+    background: $dark-1;
+
+    .todoapp {
+        background: transparent;
+    }
+
+    .todoapp h1 {
+        color: $light-text-1;
+    }
+
+    .new-todo {
+        background: $dark-2;
+        color: $light-text-1;
+    }
+
+    .todo-list .view {
+        background: $dark-3;
+        color: $light-text-2;
+    }
+
+    .todo-list li .destroy {
+        color: $light-text-2;
+
+        &:hover {
+            color: $light-text-3;
+        }
+    }
+
+    .footer {
+        background: $dark-2;
+
+        &:before {
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), 
+                        0 8px 0 -3px rgba(white, 0.08), 
+                        0 9px 1px -3px rgba(0, 0, 0, 0.2), 
+                        0 16px 0 -6px rgba(white, 0.10), 
+                        0 17px 2px -6px rgba(0, 0, 0, 0.2);
+        }
+    }
+
+    .filters li a.selected {
+        border-color: $light-text-2;
+    }
+
+    .hidden-items {
+        color: $light-text-2;
+    }
+}
