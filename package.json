@@ -1,6 +1,6 @@
 {
   "name": "react-connect-context-hooks",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Redux-like connect bindings to use along useReducer + useContext.",
   "keywords": [
     "react",
@@ -31,13 +31,9 @@
     "predeploy": "cd examples/todomvc && npm install && npm run build",
     "deploy": "gh-pages -d examples/todomvc/build"
   },
-  "dependencies": {
-    "lodash": "^4.17.15",
-    "memoizee": "^0.4.14"
-  },
   "peerDependencies": {
     "@types/react": "^16.3.13",
-    "prop-types": "^15.5.4",
+    "lodash": "^4.17.15",
     "react": "^15.0.0 || ^16.0.0",
     "react-dom": "^15.0.0 || ^16.0.0"
   },
@@ -52,6 +48,7 @@
     "babel-runtime": "^6.26.0",
     "cross-env": "^5.1.4",
     "gh-pages": "^1.2.0",
+    "lodash": "^4.17.15",
     "react": "^16.12.0",
     "react-dom": "^16.4.1",
     "react-scripts-ts": "^2.16.0",
