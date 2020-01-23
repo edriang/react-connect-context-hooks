@@ -1,5 +1,3 @@
-import get from 'lodash/get';
-
 import {
     Selector,
     KeyValueMap,
@@ -49,5 +47,19 @@ function selectFromObject(selection: KeyValueMap, data: KeyValue, props: KeyValu
 
     return selectionMap;
 }
+
+function get(obj: Object, path: string, def?: any) {
+    const fullPath = path
+        .replace(/\[/g, '.')
+        .replace(/]/g, '')
+        .split('.')
+        .filter(Boolean)
+  
+    return fullPath.every(everyFunc) ? obj : def
+  
+    function everyFunc (step: string) {
+        return !(step && (obj = obj[step]) === undefined)
+    }
+  }
 
 export default selectValues;
