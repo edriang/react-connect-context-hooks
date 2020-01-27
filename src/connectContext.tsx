@@ -12,8 +12,7 @@ import {
   
 function connectContext<T = any>(Context: React.Context<T>, Component: React.ComponentType, options: ConnectContextOptions = {}): React.FunctionComponent {
     return React.memo((props?: KeyValue) => {
-        const selection = getContextSelection(Context, options, props);
-        const mergedProps = getMergedProps(selection, props, options.computedSelectors);
+        const mergedProps = getContextSelection(Context, options, props);
 
         return <Component {...mergedProps} />;
     });
@@ -35,10 +34,13 @@ function getContextSelection<T = any>(Context: React.Context<T>, options: Connec
     const context: any = React.useContext(Context);
     const { stateSelectors, actionSelectors } = normalizedContextOptions(options);
 
-    const state = selectValues(stateSelectors, context.state, props);
-    const actions = selectValues(actionSelectors, context.actions, props);
+    const selection = {
+        ...selectValues(stateSelectors, context.state, props),
+        ...selectValues(actionSelectors, context.actions, props),
+    }
+    const mergedProps = getMergedProps(selection, props, options.computedSelectors);
 
-    return { ...state, ...actions };
+    return mergedProps;
 }
 
 function mergedConnectContextFactory(contexts: React.Context<any>[]): ConenctContextFactory {

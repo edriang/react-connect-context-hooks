@@ -118,6 +118,19 @@ describe('connectContextFactory', () => {
 
         expect(getByText(amount.toString())).toBeTruthy();
     });
+
+    it('returns derived state', () => {
+        const Component = ({ upperTestProp }: any) => upperTestProp;
+        const ComponentWithCounter = withCounter(Component, {
+            stateSelectors: ['testProp'],
+            computedSelectors: {
+                upperTestProp: [(testProp: string) => testProp.toUpperCase(), ['testProp']],
+            }
+        });
+        const { getByText } = render(<CounterProvider><ComponentWithCounter/></CounterProvider>);
+        
+        expect(getByText(mockState.testProp.toUpperCase())).toBeTruthy();
+    });
 });
 
 describe('useConnectedContextFactory', () => {
@@ -159,6 +172,24 @@ describe('useConnectedContextFactory', () => {
 
         expect(getByText(amount.toString())).toBeTruthy();
     });
+
+
+    it('returns derived state', () => {
+        const ComponentWithCounter = () => {
+            const {upperTestProp} = useCounter({
+                stateSelectors: ['testProp'],
+                computedSelectors: {
+                    upperTestProp: [(testProp: string) => testProp.toUpperCase(), ['testProp']],
+                }
+            });
+            
+            return <MockComponent testProp={upperTestProp} />
+        }
+        const { getByText } = render(<CounterProvider><ComponentWithCounter/></CounterProvider>);
+        
+        expect(getByText(mockState.testProp.toUpperCase())).toBeTruthy();
+    });
+    
 });
 
 
@@ -233,5 +264,25 @@ describe('mergedConnectContextFactory', () => {
         const textMatch = `${mockState.testProp.toUpperCase()}-${secondMockState.testProp2.toUpperCase()}`;
         expect(getByText(textMatch)).toBeTruthy();
     });
-    
+
+    it('returns derived state', () => {
+        const Component = ({textCombined}: any) => textCombined;
+        const ComponentWithCounter = withBothContexts(Component, {
+            stateSelectors: ['testProp', 'testProp2'],
+            computedSelectors: {
+                textCombined: [(testProp: string, testProp2: string) => `${testProp}-${testProp2}`, ['testProp', 'testProp2']],
+            }
+        });
+
+        const { getByText } = render(
+            <CounterProvider>
+                <CounterProvider2>
+                    <ComponentWithCounter/>
+                </CounterProvider2>
+            </CounterProvider>
+        );
+        
+        const textMatch = `${mockState.testProp}-${secondMockState.testProp2}`;
+        expect(getByText(textMatch)).toBeTruthy();
+    });
 });
