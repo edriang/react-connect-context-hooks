@@ -4,20 +4,20 @@
 
 - [react-connect-context-hooks](#react-connect-context-hooks)
     - [Install](#install)
-    - [Sample App](#sample-app)
+    - [Demo App](#demo-app)
     - [What?](#what)
     - [Why?](#why)
-    - [How?](#how)
-    - [Example](#example)
-    - [Example Actions](#example-actions)
-    - [Example Reducer](#example-reducer)
+    - [How? (Example)](#how-example)
+        - [Actions](#actions)
+        - [Reducer](#reducer)
     - [Selections](#selections)
         - [Selections using Array](#selections-using-array)
         - [Selections using Object](#selections-using-object)
         - [Selections using Function](#selections-using-function)
     - [Advanced Use-cases](#advanced-use-cases)
         - [Combining Contexts](#combining-contexts)
-        - [Deriving state with computedSelectors](#deriving-state-with-computedselectors)
+        - [Deriving State](#deriving-state)
+    - [Problems or Suggestions](#problems-or-suggestions)
     - [License](#license)
 
 <!-- /TOC -->
@@ -28,52 +28,49 @@
 npm install --save react-connect-context-hooks
 ```
 
-## Sample App
+## Demo App
 
 [https://edriang.github.io/react-connect-context-hooks](https://edriang.github.io/react-connect-context-hooks)
 
 ## What?
 
-`react-connect-context-hooks` allows you to implement your own state-management solution using React.hooks, while leverages good practices and provide DRY code.
+`react-connect-context-hooks` allows you to implement a state-management solution using React.hooks, while leverages good practices and provide DRY code.
 
- This library takes some ideas and patterns from `redux`, such as:
- - Defining different `reducers` per feature/module.
- - Defining `actionCreators` to dispatch actions (actions follows `redux-thunk` approach).
- - Providing a `connect` like functionality to allow your components be agnostic from the global state dependencies and receive only what they need.
+ This library takes ideas and patterns from `redux` and its ecosystem and integrates them all under a lightweight and easy to learn package; e.g.:
+ - Splitting the `state` per feature-modules.
+ - Defining `actionCreators` to dispatch actions (higher-order functions like `redux-thunk`).
+ - Providing a `connect` HOC for selecting values from your state.
+- Computing derived data (like `reselect`).
 
- Also, provides some good practices around implementing state-management with hooks:
- - Allows hiding your `Context`; it provides custom `Provider` HOC you can use instead for wrapping your components.
- - Provides custom `useContext` hook that allows selecting what you need from the store (similar to the `connect` HOC).
- - Provides different `selection` or mapping mechanisms for easily getting what you need from the `store`.
+ Also, enforces good practices for implementing state-management with hooks; e.g.:
+ - Provides custom `Provider` HOC for wrapping your components.
+ - Provides custom `useContext` hook for selecting what you need from the store (similar to the `connect` HOC mentioned above).
+ - Provides different `selection` or mapping options for easily getting what you need from the `store`.
+ - Prevents unnecessary re-renders implementing basic memoization on top of your components.
 
 ## Why?
 
-Since React hooks are available, a lot of discussion among the developer-community arises regarding if some complex/external tooling (such as `redux`) is needed to implement state management in your apps.
+Since React hooks are available, a lot of discussion among the developer-community arose regarding if external tooling (such as `redux`) is needed to implement global state management in your apps.
 
-While is it possible to implement redux-like functionality just with `useReducer` + `useContext`, there are good recommendations and practices that is good to consider, specially if your application grows.
+While it is possible to implement a simple redux-like functionality just with `useReducer` + `useContext`, there are good recommendations and practices that are good to consider, especially for growing applications.
 
-This library allows implementing good practices for your custom state-management solution using hooks, while allowing to avoid repeating boilerplate for every `Provider/Consumer` you need to create.
+This library allows you implementing good practices for your custom state-management solution using React hooks while reducing the boilerplate for every `Provider/Consumer` you need to create.
 
-## How?
+## How? (Example)
 
-`createContextProvider` receives a reducer function, a initial-state object, and a key-value object with actions; it will return a `Provider` component that will be used to wrap your application wherever you need to provide access to context. It will return the `Context` object to you can use to create custom `connect` HOC or `useContext`.
+* **Note:** In this section, we will review the basic functionality provided by the library. The snippets are based on the example application located in `examples/counter`. For a more complete/advanced use-case take a look at `examples/todomvc`.*
 
-## Example
-
-***Note:**In this section we will review the basic functionality provided by the library. The snippets are based in the example application located in `examples/counter`. For a more complete/advanced use-case take a look at `examples/todomvc`.*
-
-Take a look at the following example:
+Let's go through this example by explaining what is happening on the different files:
 
 ```js
 /// CounterProvider.tsx
 
 import counterReducer, { initialState } from './counterReducer';
-import { increment, decrement } from './counterActions';
+import counterActions from './counterActions';
 
 import createContextProvider, { connectContextFactory, useConnectedContextFactory } from 'react-connect-context-hooks';
 
-const actions = { increment, decrement };
-const [CounterProvider, CounterContext] = createContextProvider(counterReducer, initialState, actions);
+const [CounterProvider, CounterContext] = createContextProvider(counterReducer, initialState, counterActions);
 
 const withCounter = connectContextFactory(CounterContext);
 const useCounter = useConnectedContextFactory(CounterContext);
@@ -85,13 +82,13 @@ export {
 };
 ```
 
-***Note:** Take a look at the `example` folder to check how to define the `actions` and `reducer`*
+`createContextProvider` receives a `reducer` function, an `initialState` object, and an object with `actions`; it returns:
+ - a `Provider` component for wrapping your application and allowing its children to have access to the underlying `Context`.
+ - a `Context` object that we use next to create our custom `connect` HOC and/or `useContext` hook (`withCounter` and `useCounter` in the example).
 
-Here we created a `Provider` component and two helper functions:
-- `withCounter` is a HOC for connecting your app components as consumers of this context (this is recommended for keeping components isolated from the store).
-- `useCounter` can be used as a hook function to have access to the connected context (use this in cases where you can't use the HOC).
+ * **Note**: Check below how to define `actions` and `reducer`.*
 
-The `Provider` can be used to wrap your applications code:
+ Next, use the `Provider` component for wrapping your application's code.
 
 ```js
 /// App.tsx
@@ -138,23 +135,18 @@ export {
   Counter,
 }
 
-// Export the connected component as default
-export default withCounter(Counter as React.ComponentType<any>, {
+// Export the connected component as default for using in your application
+export default withCounter(Counter, {
   stateSelectors: ['count'],
   actionSelectors: ['increment', 'decrement'],
 });
-
 ```
 
-Here we are defining a basic `Counter` component that needs to receive 3 properties: count, increment and decrement.
+In this example, we define a simple `Counter` component expects 3 properties: `count`, `increment` and `decrement`. We will provide these values by selecting from our `Context`; e.g.:
+ - `withCounter` is a HOC that allows connecting to `CounterContext`. 
+ - this HOC function receives the `Counter` component and some options for selecting data from your `store` (check below how to define selectors).
 
-We are selecting this values from the state and the actions that we have available in our Context.
-
-The `withCounter` function is the one created before, and allows creating a HOC that is bound to the right `CounterContext`. 
-
-This HOC function receives an object with options; in the example we are using these options to select data and actions from the store.
-
-If you need to access the store from a hook, then you would use:
+In general, using the `connected` HOC is recommended, but if you need to access the store's data from a hook you can use the `hook` helper; e.g.:
 
 ```js
 /// useCountLogger.ts
@@ -167,21 +159,17 @@ export default () => {
     console.warn(`Count is: ${count}`);
 }
 
-
 ```
 
-As you can see, `useCounter` receives the same `options` object that the HOC, so you can pick what to select from the store.
+`useCounter` receives the same `options` object as the HOC, so you can select only what you need from the store.
 
 
-## Example Actions
+### Actions
 
-If you are familiar to `redux-thunk` then you will be familiar to actions here too.
+Actions are higher-order functions that receive a single `dispatch` parameter and must return a new function.
+You will use the `dispatch` function for triggering actions (similar to `redux-thunk` action creators).
 
-Actions are functions that receives a single `dispatch` parameter and returns a new function which will use the `dispatch` function to trigger some action.
-
-Note that the returned function can declare any number of arguments (even zero) and this is the function that will get selected when you use `actionSelectors` option.
-
-Example of actions:
+The returned function can declare any number of arguments (even zero); e.g.:
 
 ```js
 /// counterActions.ts
@@ -205,18 +193,24 @@ const decrement = (dispatch: any) => (amount: number) => {
     });
 }
 
+const actions = {
+  increment,
+  decrement,
+}
+
+export default actions;
+
 export {
     ACTIONS,
-    increment,
-    decrement,
 };
 ```
 
-## Example Reducer
+**Note:** for accessing these actions you will use the `actionSelectors` option as described above.
 
-This is a regular reducer function; you can check documentation about `React.useReducer` to get more familiar with it.
 
-Here is an example:
+### Reducer
+
+This is a regular reducer function; you can check [`React.useReducer`](https://reactjs.org/docs/hooks-reference.html#usereducer) documentation to get more familiar with it; e.g.:
 
 ```js
 /// counterReducer.ts
@@ -250,13 +244,13 @@ export {
 };
 ```
 
+
 ## Selections
 
-Similar to how `redux` work, the idea of the connected HOC or hook is to get access only to the portion of the state that is relevant to it.
+You can use `selectors` for retrieving data from your store. You define selections by using `stateSelectors` and/or `actionSelectors` options.
 
-You can use selections by specifying `stateSelectors` and/or `actionSelectors`.
+A selection can be defined in different ways, either using an Array, an Object or a Function as specified below.
 
-A selection can be defined in different ways, either using an Array, an Object or a Function:
 
 ### Selections using Array
 
@@ -264,33 +258,40 @@ You can pass an Array of keys you'd like to pick from the store; e.g.:
 ```js
 ['count', 'user']
 ```
-This will return an object with only those properties from the store.
 
 In case you want to assign a different name to the properties on the resulting object, you can use the following syntax: 
 ```js
 ['loggedInUser:user']
 ```
-This will get the value of the property `user` from the store and return it in a new object in the key `loggedInUser`.
+This will get the value of the `user` property from the store and will provide it to the component as `loggedInUser` prop.
 
-You can provide a "path" in case you need to select some nested property from an object; e.g.:
+You can select nested properties by providing a `path`; e.g.:
 ```js
 ['userName:user.firstName']
+```
+Note that in this case is mandatory to specify a mapping property (`userName`) to assign the result of the selection (`user.firstName`).
+
+The `path` notation also works for selecting values from an array; e.g.:
+```js
+['firstTaskTitle:todos[0].title']
 ```
 
 ### Selections using Object
 
-You can pass an Object of key:value pairs; e.g.: 
+You can pass an Object of `key:value` pairs; e.g.: 
 ```js
 {
   loggedInUser: 'user',
   userName: 'user.firstName',
 }
 ```
-You can note some similarities to the ones described with Arrays:
-- You can select a property and assign a different key in the returned object.
-- You can use path to select nested properties
 
-One special behavior using Object is that it allows to specify a getter `Function` as the value of the key; this function will receive the `state` and, in the case of using the connect HOC, the components props; e.g.:
+There are similarities to working with Arrays:
+- You can select a property from the store (`user`) and assign a different name (`loggedInUser`) in the resulting props.
+- You can use a `path` for selecting nested properties as well.
+
+One special behavior using Object selectors is it allows specifying a getter `Function`; this function will be called with the `state` and `props` of your component (the latter only available with `connect` HOC); e.g.:
+
 ```js
 {
   fullName: (state, props) => {
@@ -298,6 +299,7 @@ One special behavior using Object is that it allows to specify a getter `Functio
   },
 }
 ```
+
 
 ### Selections using Function
 
@@ -311,17 +313,19 @@ Lastly, you can specify a `Function` to create the resulting object from the `st
   }
 }
 ```
-If your store is not a key/value map, then the other selection methods won't be useful; but you can use `Function` to retrieve the whole state of the store; e.g.:
+
+**Tip:**  If your store is not a key/value map, you can use `Function` to retrieve the whole state of the store; e.g.:
 ```js
-// Let's asume that the store contains a `todos` Array, instead of defining an object/map { todos }:
+// Assuming your store is an Array of `todos` instead of { todos }:
 (todos) => todos
 ```
+
 
 ## Advanced Use-cases
 
 ### Combining Contexts
 
-There are scenarios in which you'll need to access to one or more `Context` to gather all the values your component needs. In such case, instead manually nesting your connect HOC, you can use `mergedConnectContextFactory` helper function; e.g.:
+There are scenarios in which you'll need to access more than one `Context` to gather all the values your component needs. In such cases you can use `mergedConnectContextFactory` helper function; e.g.:
 
 ```js
 import { MainContext } from './main/provider';
@@ -337,24 +341,28 @@ export default withMainAndTodos(TodosComponent, {
 });
 ```
 
-By using this helper function you can just specify a single `ConnectContextOptions` options defining the state-props and actions you wan't to select from the `Context` objects you provided (note that selections will be looked at both contexts, and the later will override the former in case of collision, so order os `Context` might be important).
+This helper function is similar to `connectContextFactory`, but instead receives an array of `Context` objects.
+
+Now, you can use your regular `selectors` for retrieving data from any of the specified store contexts.
+
+**Note:** the stores' data will be merged together before applying `selectors`; this means that the order of `Context` objects in the Array might be important in case properties have the same name.
 
 
-### Deriving state with computedSelectors
+### Deriving State
 
-It is a good practice to only add to your store the minimum data, and then derive or compute other properties your components might need.
+It is a good practice to save in the store the minimum data and then derive or compute any other value your components might need; e.g.: 
 
-For example, in a TO-DO app, you might want to display different lists of `todos` based on some filter; e.g.: `ALL', 'COMPLETED', 'PENDING';
-
-In this case, instead of storing and having to maintain 3 different lists, a better approach is to store the full list and the filter you want to apply. Then, you create a `computedSelector` to compute the new state.
-
-Take a look at the following example:
+- Let's say you are developing a TO-DO app and you want to display lists of `todos` filtered by some criteria: `ALL', 'COMPLETED', 'PENDING'.
+- In this case, instead of storing and having to maintain 3 different lists for each filter, a better approach is to store the full list and current filter; then, you can use `computedSelector` to retrieve the filtered list.
 
 ```js
+// TodosComponent.ts
+
 import { withTodos } from './todos/provider';
 
-const TodosComponent = ({ todos }) => { } 
+const TodosComponent = ({ todos }) => { /* your components' code here */ } 
 
+// This is the selector function
 const filterVisibleTodos(todos, visibilityFilter) {
   switch(visibilityFilter) {
     case 'COMPLETED': return todos.filter(todo => todo.completed);
@@ -371,14 +379,23 @@ export default withTodos(TodosComponent, {
 });
 ```
 
-The `computedSelectors` option receives an object.
-
-The keys on this object will be passed down as props; as you can see in the example, you can override a previous selected state-value if desired.
-
-On the other hand, the values expect to receive a tuple (array) with two elements: the first element is a function that will be called to compute your new property; the second element is an array of dependencies. In this array you should list only the properties needed by your function; the properties can be `props` that the object is receiving, previous selection (e.g. with `stateSelectors`) or previous returned values by other `computedSelectors` functions.
+The `computedSelectors` option expects an object with the following signature:
+- the `key` defines the name associated with the resulting object.
+- the `values` expect a tuple (array) with two elements: 
+  - the first element is a function that will be called to compute the resulting value.
+  - the second element is an array of dependencies (used for memoization). 
+  
+**Note:** the `dependencies` array can list properties coming from any of the following sources:
+- the result of previous selections (e.g. `stateSelectors` or `stateSelectors`).
+- the original `props` provided to the components.
+- previous returned values by other `computedSelectors` functions.
 
 **Important:** `computedSelectors` are memoized using `React.memo()`; this avoids re-computing a giving selector if none of the listed dependencies changed.
 
+
+## Problems or Suggestions
+
+Please feel free to open an issue on [github](https://github.com/edriang/react-connect-context-hooks).
 
 ## License
 
