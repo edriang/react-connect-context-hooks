@@ -58,7 +58,7 @@ This library allows you implementing good practices for your custom state-manage
 
 ## How? (Example)
 
-* **Note:** In this section, we will review the basic functionality provided by the library. The snippets are based on the example application located in `examples/counter`. For a more complete/advanced use-case take a look at `examples/todomvc`.*
+> *In this section, we will review the basic functionality provided by the library. The snippets are based on the example application located in `examples/counter`. For a more complete/advanced use-case take a look at `examples/todomvc`.*
 
 Let's go through this example by explaining what is happening on the different files:
 
@@ -86,7 +86,7 @@ export {
  - a `Provider` component for wrapping your application and allowing its children to have access to the underlying `Context`.
  - a `Context` object that we use next to create our custom `connect` HOC and/or `useContext` hook (`withCounter` and `useCounter` in the example).
 
- * **Note**: Check below how to define `actions` and `reducer`.*
+ **Note**: you can check below the documentation for defining `actions` and `reducer`.
 
  Next, use the `Provider` component for wrapping your application's code.
 
