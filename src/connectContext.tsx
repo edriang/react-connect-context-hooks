@@ -44,11 +44,20 @@ function getContextSelection<T = any>(Context: React.Context<T>, options: Connec
 function mergedConnectContextFactory(contexts: React.Context<any>[]): ConenctContextFactory {
     return (Component: React.ComponentType, options: ConnectContextOptions = {}) => {
         return React.memo((props?: KeyValue) => {
-            const selection = {};
+            const mergedState = {};
+            const mergedActions = {};
 
             contexts.forEach((Context) => {
-                assignDefined(selection, getContextSelection(Context, options, props));
+                const context: any = React.useContext(Context);
+
+                Object.assign(mergedState, context.state);
+                Object.assign(mergedActions, context.actions);
             });
+
+            const selection = {
+                ...selectValues(options.stateSelectors, mergedState, props),
+                ...selectValues(options.actionSelectors, mergedActions, props),
+            }
 
             const mergedProps = getMergedProps(selection, props, options.computedSelectors);
 
@@ -75,16 +84,6 @@ function getMergedProps(selection: KeyValue, props?: KeyValue, computedSelectors
     });
 
     return mergedProps;
-}
-
-function assignDefined(target: KeyValue, source: KeyValue) {
-    Object.keys(source).map((key) => {
-        if(source[key] !== undefined) {
-            target[key] = source[key];
-        }
-    });
-
-    return target;
 }
 
 function normalizedContextOptions(options: ConnectContextOptions): ConnectContextOptions {
