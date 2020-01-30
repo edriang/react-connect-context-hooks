@@ -14,9 +14,10 @@
         - [Selections using Array](#selections-using-array)
         - [Selections using Object](#selections-using-object)
         - [Selections using Function](#selections-using-function)
-    - [Advanced Use-cases](#advanced-use-cases)
+    - [Other Use-cases](#other-use-cases)
         - [Combining Contexts](#combining-contexts)
         - [Deriving State](#deriving-state)
+        - [Fetching initial data](#fetching-initial-data)
     - [Problems or Suggestions](#problems-or-suggestions)
     - [License](#license)
 
@@ -324,7 +325,7 @@ Lastly, you can specify a `Function` to create the resulting object from the `st
 ```
 
 
-## Advanced Use-cases
+## Other Use-cases
 
 ### Combining Contexts
 
@@ -394,6 +395,27 @@ The `computedSelectors` option expects an object with the following signature:
 - previous returned values by other `computedSelectors` functions.
 
 **Important:** `computedSelectors` are memoized using `React.memo()`; this avoids re-computing a giving selector if none of the listed dependencies changed.
+
+
+### Fetching initial data
+
+Sometimes you'll need to call some service when the application starts so you can populate your store with initial data.
+
+To cover that scenario, the `Provider` returned by `createContextProvider` accepts a special property called `onInit`, which expects to receive a function.
+
+If provided, this function will get called when the provider is mounted; the context value will be provided as the only parameter, you with this object you can access to both `initialState` and `actions`; e.g.:
+
+```js
+// index.tsx
+
+render(
+  <TodosProvider onInit={({ actions }: any) => actions.fetchTodos() }>
+    <App />
+  </TodosProvider>
+  document.getElementById('root')
+)
+
+```
 
 
 ## Problems or Suggestions
