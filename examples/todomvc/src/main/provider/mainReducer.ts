@@ -7,7 +7,7 @@ export type MainState = {
 }
 
 const initialState: MainState = {
-  visibilityFilter: VISIBILITY_FILTERS.SHOW_ALL,
+  visibilityFilter: VISIBILITY_FILTERS.SHOW_ACTIVE,
   theme: THEME.DARK,
 };
 

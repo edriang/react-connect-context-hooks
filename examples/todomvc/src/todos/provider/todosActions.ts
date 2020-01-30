@@ -1,6 +1,9 @@
+import { fetchTodos } from './todosHelper';
+
 import { Todo } from '../../../typings';
 
 const ACTIONS = {
+    GET_ALL_TODOS: 'GET_ALL_TODOS',
     ADD_TODO: 'ADD_TODO',
     EDIT_TODO: 'EDIT_TODO',
     DELETE_TODO: 'DELETE_TODO',
@@ -10,6 +13,15 @@ const ACTIONS = {
 };
 
 let TODO_MAX_ID = 0;
+
+const getAllTodos = (dispatch: any) => async () => {
+    const todos = await fetchTodos();
+    
+    dispatch({
+        type: ACTIONS.GET_ALL_TODOS,
+        payload: { todos },
+    });
+}
 
 const addTodo = (dispatch: any) => (text: string) => {
     ++TODO_MAX_ID;
@@ -60,6 +72,7 @@ const clearCompleted = (dispatch: any) => () => {
 }
 
 const actions = {
+    getAllTodos,
     addTodo,
     editTodo,
     deleteTodo,

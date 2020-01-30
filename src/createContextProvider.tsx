@@ -11,17 +11,23 @@ function createContextProvider(reducer: React.Reducer<any, any>, initialState: K
     const Context = React.createContext({});
 
     return [
-        (props: KeyValue) => {
+        ({ onInit, ...props }: KeyValue) => {
             const [state, dispatch] = React.useReducer(reducer, initialState);
             const actions = getBindedActions(actionCreators, dispatch);
 
-            const value = {
+            const contextValue = {
                 state,
                 actions,
             };
 
+            if (onInit) {
+                React.useMemo(() => {
+                    onInit(contextValue);
+                }, onInit);
+            }
+
             return (
-                <Context.Provider value={value} {...props}></Context.Provider>
+                <Context.Provider value={contextValue} {...props}></Context.Provider>
             );
         },
         Context,

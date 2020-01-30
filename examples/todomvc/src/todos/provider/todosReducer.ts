@@ -15,6 +15,9 @@ function reducer(state: TodosState, { type, payload = {} }: any): TodosState {
   const { todo, text } = payload;
 
   switch (type) {
+    case ACTIONS.GET_ALL_TODOS:
+      return { todos: payload.todos };
+
     case ACTIONS.ADD_TODO:
       return { todos: todos.concat([todo]) };
 
