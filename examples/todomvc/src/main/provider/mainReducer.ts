@@ -14,7 +14,7 @@ const initialState: MainState = {
 document.body.classList.add(initialState.theme);
 
 function reducer(state: MainState, { type, payload = {} }: any): MainState {
-  const { visibilityFilter, theme } = payload;
+  const { visibilityFilter } = payload;
 
   switch (type) {
     case ACTIONS.SET_VISIBILITY_FILTER:

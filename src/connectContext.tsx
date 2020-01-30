@@ -12,9 +12,12 @@ import {
   
 function connectContext<T = any>(Context: React.Context<T>, Component: React.ComponentType, options: ConnectContextOptions = {}): React.FunctionComponent {
     return React.memo((props?: KeyValue) => {
-        const mergedProps = getContextSelection(Context, options, props);
+        const [selectedState, selectedActions] = getContextSelection(Context, options, props);
+        const mergedProps = getMergedProps({ ...selectedState, ...selectedActions }, props, options.computedSelectors);
 
-        return <Component {...mergedProps} />;
+        return React.useMemo(() => (
+            <Component {...mergedProps} />
+        ), Object.values(selectedState));
     });
 };
 
@@ -25,22 +28,22 @@ function connectContextFactory<T = any>(Context: React.Context<T>): ConenctConte
 };
 
 function useConnectedContextFactory<T = any>(Context: React.Context<T>) {
-    return (options: ConnectContextOptions = {}) => {
-        return getContextSelection(Context, options);
+    return (options: ConnectContextOptions = {}): KeyValue => {
+        const [selectedState, selectedActions] = getContextSelection(Context, options);
+        const mergedProps = getMergedProps({ ...selectedState, ...selectedActions }, {}, options.computedSelectors);
+
+        return mergedProps;
     }
 }
 
-function getContextSelection<T = any>(Context: React.Context<T>, options: ConnectContextOptions = {}, props: KeyValue = {}): KeyValue {
+function getContextSelection<T = any>(Context: React.Context<T>, options: ConnectContextOptions = {}, props: KeyValue = {}): [KeyValue, KeyValue] {
     const context: any = React.useContext(Context);
     const { stateSelectors, actionSelectors } = normalizedContextOptions(options);
 
-    const selection = {
-        ...selectValues(stateSelectors, context.state, props),
-        ...selectValues(actionSelectors, context.actions, props),
-    }
-    const mergedProps = getMergedProps(selection, props, options.computedSelectors);
+    const selectedState = selectValues(stateSelectors, context.state, props);
+    const selectedActions = selectValues(actionSelectors, context.actions, props);
 
-    return mergedProps;
+    return [selectedState, selectedActions];
 }
 
 function mergedConnectContextFactory(contexts: React.Context<any>[]): ConenctContextFactory {
@@ -80,7 +83,8 @@ function getMergedProps(selection: KeyValue, props?: KeyValue, computedSelectors
 
     Object.entries(computedSelectors).forEach(([key, value]) => {
         const [fn, deps] = value;
-        const depValues = deps.map(dep => mergedProps[dep]);
+        const depValues = deps.map(dep => mergedProps[dep])
+            .filter(depValue => typeof(depValue) !== 'function');
 
         mergedProps[key] = React.useMemo(() => fn(...depValues), depValues);
     });

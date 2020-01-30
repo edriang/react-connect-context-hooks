@@ -11,17 +11,23 @@ function createContextProvider(reducer: React.Reducer<any, any>, initialState: K
     const Context = React.createContext({});
 
     return [
-        (props: KeyValue) => {
+        ({ onInit, ...props }: KeyValue) => {
             const [state, dispatch] = React.useReducer(reducer, initialState);
-            const actions = getBindedActions(actionCreators, dispatch);
+            const actions = getBindedActions(actionCreators, dispatch, state);
 
-            const value = {
-                state,
-                actions,
+            const contextValue = {
+                state: Object.freeze(state),
+                actions: Object.freeze(actions),
             };
 
+            if (onInit) {
+                React.useMemo(() => {
+                    onInit(contextValue);
+                }, onInit);
+            }
+
             return (
-                <Context.Provider value={value} {...props}></Context.Provider>
+                <Context.Provider value={contextValue} {...props}></Context.Provider>
             );
         },
         Context,
@@ -29,11 +35,11 @@ function createContextProvider(reducer: React.Reducer<any, any>, initialState: K
     
 }
 
-function getBindedActions(actions: ActionCreators, dispatch: React.Dispatch<any>): {[key: string]: Function} {
+function getBindedActions(actions: ActionCreators, dispatch: React.Dispatch<any>, state: KeyValue): {[key: string]: Function} {
     const bindedActions = {};
 
     Object.entries(actions).forEach(([key, value]) => {
-        bindedActions[key] = value(dispatch);
+        bindedActions[key] = value(dispatch, state);
     });
 
     return bindedActions;

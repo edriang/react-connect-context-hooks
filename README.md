@@ -166,10 +166,13 @@ export default () => {
 
 ### Actions
 
-Actions are higher-order functions that receive a single `dispatch` parameter and must return a new function.
-You will use the `dispatch` function for triggering actions (similar to `redux-thunk` action creators).
+Actions are higher-order functions that receive two parameters:
+- `dispatch`: used to trigger an action to be handled by the reducer.
+- `state`: reference to the current state values of your store.
 
-The returned function can declare any number of arguments (even zero); e.g.:
+This function MUST return a function. The returned function can be defined as you like with zero or more parameters and even as `async`.
+
+**Note:** if you ever used [`redux-thunk`](https://github.com/reduxjs/redux-thunk) you will notice the similarities.
 
 ```js
 /// counterActions.ts
@@ -179,14 +182,14 @@ const ACTIONS = {
     DECREMENT: 'DECREMENT',
 };
 
-const increment = (dispatch: any) => (amount: number) => {
+const increment = (dispatch: any, state: any) => (amount: number) => {
     dispatch({
         type: ACTIONS.INCREMENT,
         payload: { amount },
     });
 }
 
-const decrement = (dispatch: any) => (amount: number) => {
+const decrement = (dispatch: any, state: any) => (amount: number) => {
     dispatch({
         type: ACTIONS.DECREMENT,
         payload: { amount },

@@ -12,33 +12,20 @@ const initialState: TodosState = {
 
 function reducer(state: TodosState, { type, payload = {} }: any): TodosState {
   const { todos } = state;
-  const { todo, text } = payload;
+  const { todo } = payload;
 
   switch (type) {
-    case ACTIONS.ADD_TODO:
-      return { todos: todos.concat([todo]) };
+    case ACTIONS.UPDATE_ALL_TODOS:
+      return { todos: payload.todos };
 
-    case ACTIONS.EDIT_TODO:
-      return { todos: todos.map(current => current.id === todo.id ? { ...todo, text } : current ) };
+    case ACTIONS.UPDATE_TODO:
+        return { todos: todos.map(current => current.id === todo.id ? { ...todo } : current ) };
+
+    case ACTIONS.ADD_TODO:
+      return { todos: [todo].concat(todos) };
 
     case ACTIONS.DELETE_TODO:
       return { todos: todos.filter(current => current.id !== todo.id) };
-    
-    case ACTIONS.COMPLETE_TODO:
-      return { todos: todos.map(current => current.id === todo.id ? { ...todo, completed: !todo.completed } : current ) };
-
-    case ACTIONS.COMPLETE_ALL_TODOS:
-      const allMarked = todos.every(todo => todo.completed);
-
-      return {
-          todos: todos.map(todo => ({
-              ...todo,
-              completed: !allMarked,
-          }))
-      };
-
-    case ACTIONS.CLEAR_COMPLETED:
-      return { todos: todos.filter(todo => !todo.completed) };
 
     default:
       return state;
