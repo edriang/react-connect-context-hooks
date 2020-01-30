@@ -2,7 +2,8 @@ import axios from 'axios';
 
 import { Todo, NewTodo } from "../../../typings";
 
-const API_URL = 'http://5e3243cbb92d240014ea512c.mockapi.io/api/v1/';
+// TODO: move to constants or .env
+const API_URL = 'https://5e3243cbb92d240014ea512c.mockapi.io/api/v1/';
 
 const fetchTodos = async () => {
     const response = await axios.get(`${API_URL}/todos?page=1&limit=10&sortBy=createdAt&order=desc`);
