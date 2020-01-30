@@ -11,7 +11,7 @@ import './todoapp.scss';
 
 render(
   <MainProvider>
-    <TodosProvider onInit={({ actions }: any) => actions.getAllTodos() }>
+    <TodosProvider onInit={({ actions }: any) => actions.fetchTodos() }>
       <App />
     </TodosProvider>
   </MainProvider>,

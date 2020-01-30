@@ -30,6 +30,13 @@ body {
         text-align: center;
         padding: 10px;
     }
+
+    .todo-list {
+        .destroy,
+        .toggle {
+            cursor: pointer;
+        }
+    }
 }
 
 body.light {
@@ -57,14 +64,6 @@ body.dark {
     .todo-list .view {
         background: $dark-3;
         color: $light-text-2;
-    }
-
-    .todo-list li .destroy {
-        color: $light-text-2;
-
-        &:hover {
-            color: $light-text-3;
-        }
     }
 
     .footer {

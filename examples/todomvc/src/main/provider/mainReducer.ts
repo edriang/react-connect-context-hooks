@@ -7,14 +7,14 @@ export type MainState = {
 }
 
 const initialState: MainState = {
-  visibilityFilter: VISIBILITY_FILTERS.SHOW_ACTIVE,
+  visibilityFilter: VISIBILITY_FILTERS.SHOW_ALL,
   theme: THEME.DARK,
 };
 
 document.body.classList.add(initialState.theme);
 
 function reducer(state: MainState, { type, payload = {} }: any): MainState {
-  const { visibilityFilter, theme } = payload;
+  const { visibilityFilter } = payload;
 
   switch (type) {
     case ACTIONS.SET_VISIBILITY_FILTER:

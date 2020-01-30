@@ -13,11 +13,11 @@ function createContextProvider(reducer: React.Reducer<any, any>, initialState: K
     return [
         ({ onInit, ...props }: KeyValue) => {
             const [state, dispatch] = React.useReducer(reducer, initialState);
-            const actions = getBindedActions(actionCreators, dispatch);
+            const actions = getBindedActions(actionCreators, dispatch, state);
 
             const contextValue = {
-                state,
-                actions,
+                state: Object.freeze(state),
+                actions: Object.freeze(actions),
             };
 
             if (onInit) {
@@ -35,11 +35,11 @@ function createContextProvider(reducer: React.Reducer<any, any>, initialState: K
     
 }
 
-function getBindedActions(actions: ActionCreators, dispatch: React.Dispatch<any>): {[key: string]: Function} {
+function getBindedActions(actions: ActionCreators, dispatch: React.Dispatch<any>, state: KeyValue): {[key: string]: Function} {
     const bindedActions = {};
 
     Object.entries(actions).forEach(([key, value]) => {
-        bindedActions[key] = value(dispatch);
+        bindedActions[key] = value(dispatch, state);
     });
 
     return bindedActions;

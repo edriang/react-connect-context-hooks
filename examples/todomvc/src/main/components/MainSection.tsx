@@ -9,35 +9,42 @@ import TodoList from '../../todos/components/TodoList';
 type MainSectionProps = {
   todosCount: number;
   completedCount: number;
-  completeAllTodos: () => void;
+  completeAllTodos: (completed: boolean) => void;
   clearCompleted: () => void;
 }
 
-const MainSection: React.FC<MainSectionProps> = ({ todosCount, completedCount, completeAllTodos, clearCompleted }) => (
-  <section className="main">
-    {
-      !!todosCount && 
-      <span>
-        <input
-          className="toggle-all"
-          type="checkbox"
-          checked={completedCount === todosCount}
-          readOnly
+const MainSection: React.FC<MainSectionProps> = ({ todosCount, completedCount, completeAllTodos, clearCompleted }) => {
+  
+  const onClick = () => {
+    completeAllTodos(completedCount === todosCount ? false : true);
+  }
+
+  return (
+    <section className="main">
+      {
+        !!todosCount && 
+        <span>
+          <input
+            className="toggle-all"
+            type="checkbox"
+            checked={completedCount === todosCount}
+            readOnly
+          />
+          <label onClick={onClick}/>
+        </span>
+      }
+      <TodoList />
+      {
+        !!todosCount &&
+        <Footer
+          completedCount={completedCount}
+          activeCount={todosCount - completedCount}
+          onClearCompleted={clearCompleted}
         />
-        <label onClick={completeAllTodos}/>
-      </span>
-    }
-    <TodoList />
-    {
-      !!todosCount &&
-      <Footer
-        completedCount={completedCount}
-        activeCount={todosCount - completedCount}
-        onClearCompleted={clearCompleted}
-      />
-    }
-  </section>
-)
+      }
+    </section>
+  )
+}
 
 export default withTodos(MainSection, {
   stateSelectors: {

@@ -1,78 +1,107 @@
-import { fetchTodos } from './todosHelper';
+import todosApi from './todosApi';
 
-import { Todo } from '../../../typings';
+import { Todo, NewTodo } from '../../../typings';
+import { TodosState } from './todosReducer';
 
 const ACTIONS = {
-    GET_ALL_TODOS: 'GET_ALL_TODOS',
-    ADD_TODO: 'ADD_TODO',
-    EDIT_TODO: 'EDIT_TODO',
-    DELETE_TODO: 'DELETE_TODO',
-    COMPLETE_TODO: 'COMPLETE_TODO',
-    COMPLETE_ALL_TODOS: 'COMPLETE_ALL_TODOS',
-    CLEAR_COMPLETED: 'CLEAR_COMPLETED',
+    UPDATE_ALL_TODOS: Symbol(),
+    UPDATE_TODO: Symbol(),
+    ADD_TODO: Symbol(),
+    DELETE_TODO: Symbol(),
 };
 
-let TODO_MAX_ID = 0;
-
-const getAllTodos = (dispatch: any) => async () => {
-    const todos = await fetchTodos();
+const fetchTodos = (dispatch: any) => async () => {
+    const todos = await todosApi.fetchTodos();
     
     dispatch({
-        type: ACTIONS.GET_ALL_TODOS,
+        type: ACTIONS.UPDATE_ALL_TODOS,
         payload: { todos },
     });
 }
 
-const addTodo = (dispatch: any) => (text: string) => {
-    ++TODO_MAX_ID;
-
-    const todo: Todo = {
+const addTodo = (dispatch: any) => async (text: string) => {
+    const todo: NewTodo = {
         text,
-        id: TODO_MAX_ID,
         completed: false,
+        createdAt: Date.now(),
     }
+
+    const newTodo = await todosApi.addTodo(todo);
     
     dispatch({
         type: ACTIONS.ADD_TODO,
-        payload: { todo },
+        payload: { todo: newTodo },
     });
 }
 
-const editTodo = (dispatch: any) => (todo: Todo, text: string) => {
+const editTodo = (dispatch: any) => async (todo: Todo, text: string) => {
+    todo.text = text;
+
+    const updatedTodo = await todosApi.updateTodo(todo);
+
     dispatch({
-        type: ACTIONS.EDIT_TODO,
-        payload: { todo, text },
+        type: ACTIONS.UPDATE_TODO,
+        payload: { todo: updatedTodo },
     })
 }
 
-const deleteTodo = (dispatch: any) => (todo: Todo) => {
+const deleteTodo = (dispatch: any) => async (todo: Todo) => {
+    const deletedTodo = await todosApi.deleteTodo(todo);
+
     dispatch({
         type: ACTIONS.DELETE_TODO,
-        payload: { todo },
+        payload: { todo: deletedTodo },
     })
 }
 
-const completeTodo = (dispatch: any) => (todo: Todo) => {
+const completeTodo = (dispatch: any) => async (todo: Todo) => {
+    const updatedTodo = await todosApi.toggleComplete(todo);
+
     dispatch({
-        type: ACTIONS.COMPLETE_TODO,
-        payload: { todo },
+        type: ACTIONS.UPDATE_TODO,
+        payload: { todo: updatedTodo },
     })
 }
 
-const completeAllTodos = (dispatch: any) => () => {
+const completeAllTodos = (dispatch: any, { todos }: any) => async (completed: boolean) => {
+    const todosToUpdate = todos.filter((todo: Todo) => todo.completed !== completed);
+
+    const promises = todosToUpdate.map((todo: Todo) => (
+        todosApi.updateTodo({ ...todo, completed })
+    ));
+
+    await Promise.all(promises);
+
+    const updatedTodos = todos.map((todo: Todo) => {
+        todo.completed = completed;
+        return todo;
+    });
+
     dispatch({
-        type: ACTIONS.COMPLETE_ALL_TODOS,
-    })
+        type: ACTIONS.UPDATE_ALL_TODOS,
+        payload: { todos: updatedTodos }
+    });
 }
 
-const clearCompleted = (dispatch: any) => () => {
+const clearCompleted = (dispatch: any, { todos }: TodosState) => async () => {
+    const todosToRemove = todos.filter((todo) => todo.completed === true);
+
+    const promises = todosToRemove.map((todo) => (
+        todosApi.deleteTodo(todo)
+    ));
+
+    await Promise.all(promises);
+
+    const updatedTodos = todos.filter((todo) => !todo.completed);
+
     dispatch({
-        type: ACTIONS.CLEAR_COMPLETED,
-    })
+        type: ACTIONS.UPDATE_ALL_TODOS,
+        payload: { todos: updatedTodos }
+    });
 }
 
 const actions = {
-    getAllTodos,
+    fetchTodos,
     addTodo,
     editTodo,
     deleteTodo,

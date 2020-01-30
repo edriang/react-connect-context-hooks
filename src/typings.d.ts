@@ -6,7 +6,7 @@ export type KeyValueMap = {
     [key: string]: string | ((state: KeyValue, props?: KeyValue) => any);
 }
 
-export type Action = (dispatch: React.Dispatch<any>) => Function;
+export type Action = (dispatch: React.Dispatch<any>, state?: KeyValue) => Function;
 
 export type ActionCreators = {
     [key: string]: Action;
