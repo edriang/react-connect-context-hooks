@@ -4,10 +4,10 @@ import { Todo, NewTodo } from '../../../typings';
 import { TodosState } from './todosReducer';
 
 const ACTIONS = {
-    UPDATE_ALL_TODOS: Symbol(),
-    UPDATE_TODO: Symbol(),
-    ADD_TODO: Symbol(),
-    DELETE_TODO: Symbol(),
+    UPDATE_ALL_TODOS: Symbol('UPDATE_ALL_TODOS'),
+    UPDATE_TODO: Symbol('UPDATE_TODO'),
+    ADD_TODO: Symbol('ADD_TODO'),
+    DELETE_TODO: Symbol('DELETE_TODO'),
 };
 
 const fetchTodos = (dispatch: any) => async () => {

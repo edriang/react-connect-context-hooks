@@ -1,6 +1,6 @@
 const ACTIONS = {
-    INCREMENT: 'INCREMENT',
-    DECREMENT: 'DECREMENT',
+    INCREMENT: Symbol('INCREMENT'),
+    DECREMENT: Symbol('DECREMENT'),
 };
 
 const incrementAction = (dispatch: any) => (amount: number) => {

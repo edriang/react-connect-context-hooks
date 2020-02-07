@@ -42,5 +42,5 @@ export {
 
 export default withCounter(Counter, {
     stateSelectors: ['count'],
-    actionSelectors: ['increment:incrementAction', 'decrement:decrementAction'],
+    actionSelectors: ['increment', 'decrement'],
 });

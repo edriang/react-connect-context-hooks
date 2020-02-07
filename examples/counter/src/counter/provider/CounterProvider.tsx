@@ -1,11 +1,11 @@
+import createContextProvider, { connectContextFactory, useConnectedContextFactory } from 'react-connect-context-hooks';
+
 import counterReducer, { initialState } from './counterReducer';
 import { incrementAction, decrementAction } from './counterActions';
 
-import createContextProvider, { connectContextFactory, useConnectedContextFactory } from 'react-connect-context-hooks';
-
 const actions = {
-    incrementAction,
-    decrementAction,
+    increment: incrementAction,
+    decrement: decrementAction,
 }
 
 const [CounterProvider, CounterContext] = createContextProvider(counterReducer, initialState, actions);

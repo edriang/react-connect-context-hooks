@@ -1,6 +1,6 @@
 const ACTIONS = {
-    SET_VISIBILITY_FILTER: 'SET_VISIBILITY_FILTER',
-    SWITCH_THEME: 'SWITCH_THEME',
+    SET_VISIBILITY_FILTER: Symbol('SET_VISIBILITY_FILTER'),
+    SWITCH_THEME: Symbol('SWITCH_THEME'),
 };
 
 const setVisibilityFilter = (dispatch: any) => (visibilityFilter: string) => {

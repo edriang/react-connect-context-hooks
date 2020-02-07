@@ -5,5 +5,5 @@ export default () => {
       stateSelectors: ['count'],
     });
   
-    console.warn(`Count is: ${count}`);
+    console.info(`Count is: ${count}`);
 }

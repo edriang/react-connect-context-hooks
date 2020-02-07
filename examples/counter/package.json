@@ -12,7 +12,7 @@
     "@types/react": "^16.9.17",
     "@types/react-dom": "^16.9.4",
     "react": "^16.12.0",
-    "react-connect-context-hooks": "^0.1.7",
+    "react-connect-context-hooks": "^0.5.1",
     "react-dom": "^16.12.0",
     "react-scripts": "3.3.0",
     "typescript": "^3.7.5"
