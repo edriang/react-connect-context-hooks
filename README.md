@@ -119,17 +119,30 @@ import React from 'react';
 
 import { withCounter } from './provider/CounterProvider';
 
-const Counter: React.FC<any> = ({ count, increment, decrement }) => (
-  <div>
-    <h1>Counter Component</h1>
-    <p>
-      <b>Count: </b>
-      <span>{count}</span>
-    </p>
-    <button onClick={() => decrement(amount)}>Decrement</button>
-    <button onClick={() => increment(amount)}>Increment</button>
-  </div>
-)
+const Counter: React.FC<CounterProps> = ({ count, increment, decrement }) => {
+  const [amount, setAmount] = React.useState(1);
+
+  const updateAmount = (event: any) => {
+    setAmount(parseInt(event.target.value));
+  }
+
+  return (
+    <div>
+      <h1>Counter Component</h1>
+      <p>
+        <b>Amount:</b>
+        <input type="number" value={amount} onChange={updateAmount} />
+      </p>
+      <p>
+        <b>Count: </b>
+        <span>{count}</span>
+      </p>
+      <hr />
+      <button onClick={() => decrement(amount)}>Decrement</button>
+      <button onClick={() => increment(amount)}>Increment</button>
+    </div>
+  )
+}
 
 // Export isolated component is recommended for unit-testing
 export {
