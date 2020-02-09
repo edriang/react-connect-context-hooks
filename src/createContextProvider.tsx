@@ -23,7 +23,7 @@ function createContextProvider(reducer: React.Reducer<any, any>, initialState: K
             if (onInit) {
                 React.useMemo(() => {
                     onInit(contextValue);
-                }, onInit);
+                }, [onInit]);
             }
 
             return (

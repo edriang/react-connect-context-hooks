@@ -13,7 +13,7 @@
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
     "react": "^16.8.6",
-    "react-connect-context-hooks": "^0.3.0",
+    "react-connect-context-hooks": "^0.6.0",
     "react-dom": "^16.8.6",
     "react-switch": "^5.0.1",
     "reselect": "^4.0.0",
