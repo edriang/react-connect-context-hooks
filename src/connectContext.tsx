@@ -83,10 +83,10 @@ function getMergedProps(selection: KeyValue, props?: KeyValue, computedSelectors
 
     Object.entries(computedSelectors).forEach(([key, value]) => {
         const [fn, deps] = value;
-        const depValues = deps.map(dep => mergedProps[dep])
-            .filter(depValue => typeof(depValue) !== 'function');
+        const depValues = deps.map(dep => mergedProps[dep]);
+        const memoValues = depValues.filter(depValue => typeof(depValue) !== 'function');
 
-        mergedProps[key] = React.useMemo(() => fn(...depValues), depValues);
+        mergedProps[key] = React.useMemo(() => fn(...depValues), memoValues);
     });
 
     return mergedProps;
