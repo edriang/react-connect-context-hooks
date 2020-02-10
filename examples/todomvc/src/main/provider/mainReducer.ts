@@ -1,5 +1,5 @@
 import { ACTIONS } from './mainActions';
-import { VISIBILITY_FILTERS, THEME } from '../constants';
+import { VISIBILITY_FILTERS, THEME, DEFAULT_THEME } from '../constants';
 
 export type MainState = {
   visibilityFilter: string;
@@ -8,7 +8,7 @@ export type MainState = {
 
 const initialState: MainState = {
   visibilityFilter: VISIBILITY_FILTERS.SHOW_ALL,
-  theme: THEME.DARK,
+  theme: DEFAULT_THEME,
 };
 
 document.body.classList.add(initialState.theme);

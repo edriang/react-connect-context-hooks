@@ -13,7 +13,7 @@ import {
 function connectContext<T = any>(Context: React.Context<T>, Component: React.ComponentType, options: ConnectContextOptions = {}): React.FunctionComponent {
     return React.memo((props?: KeyValue) => {
         const [selectedState, selectedActions] = getContextSelection(Context, options, props);
-        const mergedProps = getMergedProps({ ...selectedState, ...selectedActions }, props, options.computedSelectors);
+        const mergedProps = getMergedProps(selectedState, selectedActions, props, options.computedSelectors);
 
         return React.useMemo(() => (
             <Component {...mergedProps} />
@@ -30,7 +30,7 @@ function connectContextFactory<T = any>(Context: React.Context<T>): ConenctConte
 function useConnectedContextFactory<T = any>(Context: React.Context<T>) {
     return (options: ConnectContextOptions = {}): KeyValue => {
         const [selectedState, selectedActions] = getContextSelection(Context, options);
-        const mergedProps = getMergedProps({ ...selectedState, ...selectedActions }, {}, options.computedSelectors);
+        const mergedProps = getMergedProps(selectedState, selectedActions, {}, options.computedSelectors);
 
         return mergedProps;
     }
@@ -59,12 +59,10 @@ function mergedConnectContextFactory(contexts: React.Context<any>[]): ConenctCon
                 Object.assign(mergedActions, context.actions);
             });
 
-            const selection = {
-                ...selectValues(options.stateSelectors, mergedState, props),
-                ...selectValues(options.actionSelectors, mergedActions, props),
-            }
+            const selectedState = selectValues(options.stateSelectors, mergedState, props);
+            const selectedActions = selectValues(options.actionSelectors, mergedActions, props);
 
-            const mergedProps = getMergedProps(selection, props, options.computedSelectors);
+            const mergedProps = getMergedProps(selectedState, selectedActions, props, options.computedSelectors);
 
             // DEPRECATED
             if (options.afterMerge) {
@@ -78,8 +76,8 @@ function mergedConnectContextFactory(contexts: React.Context<any>[]): ConenctCon
     };
 };
 
-function getMergedProps(selection: KeyValue, props?: KeyValue, computedSelectors: ComputedSelectors = {}) {
-    const mergedProps = {...selection, ...props};
+function getMergedProps(selectedState: KeyValue, selectedActions: KeyValue, props?: KeyValue, computedSelectors: ComputedSelectors = {}) {
+    const mergedProps = {...selectedState, ...selectedActions, ...props};
 
     Object.entries(computedSelectors).forEach(([key, value]) => {
         const [fn, deps] = value;

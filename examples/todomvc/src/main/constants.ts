@@ -8,3 +8,5 @@ export const THEME = {
     LIGHT: 'light',
     DARK: 'dark',
 };
+
+export const DEFAULT_THEME = THEME.DARK;
