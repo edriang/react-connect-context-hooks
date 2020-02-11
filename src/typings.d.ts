@@ -12,8 +12,10 @@ export type ActionCreators = {
     [key: string]: Action;
 };
 
+export type CustomProvider = React.ComponentType<any> | React.FC<any>;
+
 export type CreateContextProviderReturn = [
-    React.ComponentType<any> | React.FC<any>,
+    CustomProvider,
     React.Context<any>
 ]
 
@@ -42,4 +44,4 @@ export type ConnectContextOptions = {
     afterMerge?: AfterMergeCallback;
 }
 
-export type ConenctContextFactory = (Component: React.ComponentType<any> | React.FC<any>, options: ConnectContextOptions) => React.FunctionComponent;
+export type ConnectContextFactory = (Component: React.ComponentType<any> | React.FC<any>, options: ConnectContextOptions) => React.FunctionComponent;

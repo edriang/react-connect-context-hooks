@@ -2,7 +2,12 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 
-import createContextProvider, { connectContextFactory, useConnectedContextFactory, mergedConnectContextFactory } from './';
+import createContextProvider, {
+    connectContextFactory,
+    useConnectedContextFactory,
+    mergedConnectContextFactory,
+    useMergedConnectedContextFactory,
+} from './';
 
 const mockState = {
     count: 0,
@@ -10,6 +15,9 @@ const mockState = {
 };
 
 const MockComponent = ({ testProp }: any) => testProp;
+const OutputPropsComponent = ({ output, ...props }: any) => {
+    return <span>{output.map((key: string) => props[key]).join('-')}</span>
+}
 const CountComponent = ({ count, increment, amount = 1 }: any) => (
     <button data-testid="button" onClick={() => increment(amount)}>
         {count}
@@ -278,6 +286,84 @@ describe('mergedConnectContextFactory', () => {
             <CounterProvider>
                 <CounterProvider2>
                     <ComponentWithCounter/>
+                </CounterProvider2>
+            </CounterProvider>
+        );
+        
+        const textMatch = `${mockState.testProp}-${secondMockState.testProp2}`;
+        expect(getByText(textMatch)).toBeTruthy();
+    });
+});
+
+
+describe('useMergedConnectedContextFactory', () => {
+    const secondMockState = {
+        count2: 2000,
+        testProp2: 'TEST 2',
+    };
+
+    function reducer(state: any) {
+        return state;
+    }
+
+    let CounterProvider2: any, CounterContext2: any, useBothContexts: any;
+
+    function getComponent(selectors: any, output: string[]) {
+        return () => {
+            const props = useBothContexts(selectors);
+            
+            return <OutputPropsComponent {...props} output={output} />;
+        }
+    }
+
+    beforeEach(() => {
+        [CounterProvider2, CounterContext2] = createContextProvider(reducer, secondMockState, {});
+        useBothContexts = useMergedConnectedContextFactory([CounterContext, CounterContext2]);
+    });
+
+    it('loads values from both contexts', () => {
+        const Component = getComponent({
+            stateSelectors: ['testProp', 'testProp2'],
+        }, ['testProp', 'testProp2']);
+        const { getByText } = render((
+            <CounterProvider>
+                <CounterProvider2>
+                    <Component />           
+                </CounterProvider2>
+            </CounterProvider>
+        ));
+        
+        expect(getByText(`${mockState.testProp}-${secondMockState.testProp2}`)).toBeTruthy();
+    });
+
+    it('overrides first context value with second one', () => {
+        const Component = getComponent({
+            stateSelectors: ['testProp', 'testProp:testProp2'],
+        }, ['testProp']);
+
+        const { getByText } = render(
+            <CounterProvider>
+                <CounterProvider2>
+                    <Component/>
+                </CounterProvider2>
+            </CounterProvider>
+        );
+        
+        expect(getByText(secondMockState.testProp2)).toBeTruthy();
+    });
+
+    it('returns derived state', () => {
+        const Component = getComponent({
+            stateSelectors: ['testProp', 'testProp2'],
+            computedSelectors: {
+                textCombined: [(testProp: string, testProp2: string) => `${testProp}-${testProp2}`, ['testProp', 'testProp2']],
+            }
+        }, ['textCombined']);
+
+        const { getByText } = render(
+            <CounterProvider>
+                <CounterProvider2>
+                    <Component/>
                 </CounterProvider2>
             </CounterProvider>
         );
