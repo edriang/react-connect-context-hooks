@@ -1,8 +1,8 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import { withMain } from '../provider';
-import { MainState } from '../provider/mainReducer';
+import { withMain } from '../store';
+import { MainState } from '../store/mainReducer';
 
 type LinkProps = {
   active: boolean;

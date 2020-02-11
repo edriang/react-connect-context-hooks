@@ -2,8 +2,8 @@ import React from 'react';
 import { mergedConnectContextFactory } from 'react-connect-context-hooks';
 
 import TodoItem from './TodoItem';
-import { TodosContext } from '../provider';
-import { MainContext } from '../../main/provider';
+import { TodosContext } from '../store';
+import { MainContext } from '../../main/store';
 import filterVisibleTodos, { totalTodos, hiddenItemsCount } from '../utils/filterVisibleTodos';
 
 import { Todo } from '../../../typings';

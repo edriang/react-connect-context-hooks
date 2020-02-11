@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 
-import CounterProvider from './counter/provider';
+import CounterProvider from './counter/store';
 import Counter from './counter/Counter';
 
 const App: React.FC = () => {

@@ -2,8 +2,8 @@ import React from 'react';
 
 import Footer from './Footer';
 
-import { withTodos } from '../../todos/provider';
-import { TodosState } from '../../todos/provider/todosReducer';
+import { withTodos } from '../../todos/store';
+import { TodosState } from '../../todos/store/todosReducer';
 import TodoList from '../../todos/components/TodoList';
 
 type MainSectionProps = {

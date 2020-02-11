@@ -1,7 +1,7 @@
 import React from 'react';
 
 import TodoTextInput from '../../todos/components/TodoTextInput';
-import { withTodos } from '../../todos/provider';
+import { withTodos } from '../../todos/store';
 
 import { addTodo } from '../../../typings';
 

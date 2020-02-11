@@ -1,4 +1,4 @@
-import { useCounter } from './provider';
+import { useCounter } from './store';
 
 export default () => {
     const { count } = useCounter({

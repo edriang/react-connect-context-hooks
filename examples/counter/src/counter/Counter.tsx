@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { withCounter } from './provider';
+import { withCounter } from './store';
 import useCountLogger from './useCountLogger';
 
 type CounterProps = {

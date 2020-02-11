@@ -4,7 +4,7 @@ import Header from './Header';
 import MainSection from './MainSection';
 import Switch from './Switch';
 
-import { withMain } from '../provider';
+import { withMain } from '../store';
 
 import { THEME } from '../constants';
 
