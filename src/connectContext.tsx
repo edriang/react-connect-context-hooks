@@ -49,20 +49,7 @@ function getContextSelection<T = any>(Context: React.Context<T>, options: Connec
 function mergedConnectContextFactory(contexts: React.Context<any>[]): ConnectContextFactory {
     return (Component: React.ComponentType, options: ConnectContextOptions = {}) => {
         return React.memo((props?: KeyValue) => {
-            const mergedState = {};
-            const mergedActions = {};
-
-            contexts.forEach((Context) => {
-                const context: any = React.useContext(Context);
-
-                Object.assign(mergedState, context.state);
-                Object.assign(mergedActions, context.actions);
-            });
-
-            const selectedState = selectValues(options.stateSelectors, mergedState, props);
-            const selectedActions = selectValues(options.actionSelectors, mergedActions, props);
-
-            const mergedProps = getMergedProps(selectedState, selectedActions, props, options.computedSelectors);
+            const mergedProps = getMergedPropsFromContexts(contexts, options, props);
 
             // DEPRECATED
             if (options.afterMerge) {
@@ -80,22 +67,27 @@ function mergedConnectContextFactory(contexts: React.Context<any>[]): ConnectCon
 
 function useMergedConnectedContextFactory(contexts: React.Context<any>[]) {
     return (options: ConnectContextOptions = {}): KeyValue => {
-        const mergedState = {};
-        const mergedActions = {};
-
-        contexts.forEach((Context) => {
-            const context: any = React.useContext(Context);
-
-            Object.assign(mergedState, context.state);
-            Object.assign(mergedActions, context.actions);
-        });
-
-        const selectedState = selectValues(options.stateSelectors, mergedState);
-        const selectedActions = selectValues(options.actionSelectors, mergedActions);
-        const mergedProps = getMergedProps(selectedState, selectedActions, {}, options.computedSelectors);
-
-        return mergedProps;
+        return getMergedPropsFromContexts(contexts, options);
     };
+}
+
+function getMergedPropsFromContexts(contexts: React.Context<any>[], options: ConnectContextOptions, props: KeyValue = {}) {
+    const mergedState = {};
+    const mergedActions = {};
+
+    contexts.forEach((Context) => {
+        const context: any = React.useContext(Context);
+
+        Object.assign(mergedState, context.state);
+        Object.assign(mergedActions, context.actions);
+    });
+
+    const selectedState = selectValues(options.stateSelectors, mergedState, props);
+    const selectedActions = selectValues(options.actionSelectors, mergedActions, props);
+
+    const mergedProps = getMergedProps(selectedState, selectedActions, props, options.computedSelectors);
+
+    return mergedProps
 }
 
 function getMergedProps(selectedState: KeyValue, selectedActions: KeyValue, props?: KeyValue, computedSelectors: ComputedSelectors = {}) {
