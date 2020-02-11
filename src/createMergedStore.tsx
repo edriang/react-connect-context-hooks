@@ -13,6 +13,7 @@ function createMergedStore(providers: CustomProvider[]): [CustomProvider, Connec
     const useStore = useMergedConnectedContextFactory(contexts);
 
     const MergedStore = (props: KeyValue) => {
+        // TODO: this needs to be connected or can just read the merged values from the context similar to createContextProvider onInit
         const Child = props.onInit ?  getConnectedChild(withStore, props.onInit) : DefaultChild;
 
         let wrapper: any = <Child {...props} />;

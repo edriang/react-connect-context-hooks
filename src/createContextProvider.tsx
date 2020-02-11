@@ -6,6 +6,8 @@ import {
     CreateContextProviderReturn,
     CustomProvider,
 } from './typings';
+import selectValues from './selectValues';
+import { getMergedProps } from './connectContext';
 
 const providerContextMap = new Map<CustomProvider, React.Context<any>>();
 
@@ -21,9 +23,15 @@ function createContextProvider(reducer: React.Reducer<any, any>, initialState: K
         };
 
         if (onInit) {
+            const [options, onInitFn] = onInit;
+
+            const selectedState = selectValues(options.stateSelectors, state, props);
+            const selectedActions = selectValues(options.actionSelectors, actions, props);
+            const mergedProps = getMergedProps(selectedState, selectedActions, {}, options.computedSelectors);
+
             React.useMemo(() => {
-                onInit(contextValue);
-            }, [onInit]);
+                onInitFn(mergedProps);
+            }, []);
         }
 
         return (

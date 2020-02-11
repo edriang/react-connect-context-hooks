@@ -16,6 +16,7 @@
         - [Selections using Function](#selections-using-function)
     - [Other Use-cases](#other-use-cases)
         - [Combining Contexts](#combining-contexts)
+        - [Merged Store](#merged-store)
         - [Deriving State](#deriving-state)
         - [Fetching initial data](#fetching-initial-data)
     - [Problems or Suggestions](#problems-or-suggestions)
@@ -96,7 +97,7 @@ export {
 
 import React from 'react';
 
-import CounterProvider from './counter/provider';
+import CounterProvider from './counter/store';
 import Counter from './counter/Counter';
 
 const App: React.FC = () => {
@@ -117,7 +118,7 @@ Finally, use the `connected` HOC in your components code as follows:
 
 import React from 'react';
 
-import { withCounter } from './provider/CounterProvider';
+import { withCounter } from './store/CounterProvider';
 
 const Counter: React.FC<CounterProps> = ({ count, increment, decrement }) => {
   const [amount, setAmount] = React.useState(1);
@@ -345,8 +346,8 @@ Lastly, you can specify a `Function` to create the resulting object from the `st
 There are scenarios in which you'll need to access more than one `Context` to gather all the values your component needs. In such cases you can use `mergedConnectContextFactory` helper function; e.g.:
 
 ```js
-import { MainContext } from './main/provider';
-import { TodosContext } from './todos/provider';
+import { MainContext } from './main/store';
+import { TodosContext } from './todos/store';
 
 const TodosComponent = ({ mainStateProp, todosStateProp, todosActionProp, anotherProp}) => { } 
 
@@ -365,6 +366,61 @@ Now, you can use your regular `selectors` for retrieving data from any of the sp
 **Note:** the stores' data will be merged together before applying `selectors`; this means that the order of `Context` objects in the Array might be important in case properties have the same name.
 
 
+### Merged Store
+
+The use case for Merged Stores is similar to "Combining Contexts" as explained above, but the main difference is it allows you to create one merged store with all your providers for wrapping your App; e.g.:
+
+```js
+// store.tsx
+
+import { createMergedStore } from 'react-connect-context-hooks';
+
+import MainProvider from './main/store';
+import TodosProvider from './todos/store';
+
+const [StoreProvider, withStore, useStore] = createMergedStore([MainProvider, TodosProvider]);
+
+export default StoreProvider;
+export {
+    withStore,
+    useStore,
+};
+```
+
+Then you can wrap your `App` using this only provider:
+
+```js
+// index.tsx
+import React from 'react';
+import { render } from 'react-dom';
+
+import App from './main/components/App';
+import StoreProvider, { useStore } from './store';
+
+
+const onInit = ({ fetchTodos }: any) => {
+  fetchTodos();
+}
+
+const selection = {
+  actionSelectors: ['fetchTodos'],
+}
+
+render(
+  <StoreProvider onInit={[selection, onInit]}>
+    <App />
+  </StoreProvider>,
+  document.getElementById('root')
+)
+```
+
+As you can see, `StoreProvider` also support `onInit` function for triggering an action when your Provider is rendered.
+
+Notice that `createMergedStore` also returns two additional values:
+- `withStore`: will connect any component with all your merged stores context values.
+- `useStore`: is a hook that will let you access all your merged stores context values.
+
+
 ### Deriving State
 
 It is a good practice to save in the store the minimum data and then derive or compute any other value your components might need; e.g.: 
@@ -375,7 +431,7 @@ It is a good practice to save in the store the minimum data and then derive or c
 ```js
 // TodosComponent.ts
 
-import { withTodos } from './todos/provider';
+import { withTodos } from './todos/store';
 
 const TodosComponent = ({ todos }) => { /* your components' code here */ } 
 
@@ -414,15 +470,25 @@ The `computedSelectors` option expects an object with the following signature:
 
 Sometimes you'll need to call some service when the application starts so you can populate your store with initial data.
 
-To cover that scenario, the `Provider` returned by `createContextProvider` accepts a special property called `onInit`, which expects to receive a function.
+To cover that scenario, the `Provider` returned by `createContextProvider` accepts a special property called `onInit`, which expects to receive a tuple (array) with two values: a selections object and a function.
 
-If provided, this function will get called when the provider is mounted; the context value will be provided as the only parameter, you with this object you can access to both `initialState` and `actions`; e.g.:
+The `selection object` is the same as the one used with connect HOC and allows selecting only what you need from your store, as well as applying derived state functions.
+
+The `function` provided as second parameter will be called with the result of the previous selection.
+
+Note that, if provided, `onInit` function will be triggered only once when the Provider is first rendered; e.g.:
 
 ```js
 // index.tsx
 
+const selectionOption = {
+  actions: ['fetchTodos'],
+}
+
+const onInit({ fetchTodos }) => fetchTodos();
+
 render(
-  <TodosProvider onInit={({ actions }: any) => actions.fetchTodos() }>
+  <TodosProvider onInit={[selectionOption, onInit]}>
     <App />
   </TodosProvider>
   document.getElementById('root')

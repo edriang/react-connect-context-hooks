@@ -84,7 +84,7 @@ function getMergedPropsFromContexts(contexts: React.Context<any>[], options: Con
 
     const selectedState = selectValues(options.stateSelectors, mergedState, props);
     const selectedActions = selectValues(options.actionSelectors, mergedActions, props);
-
+    // TODO: rename getMergedProps to something related with computedSelectors, and create a new getMergedProps that all these 3 steps
     const mergedProps = getMergedProps(selectedState, selectedActions, props, options.computedSelectors);
 
     return mergedProps
@@ -131,4 +131,5 @@ export {
     useConnectedContextFactory,
     mergedConnectContextFactory,
     useMergedConnectedContextFactory,
+    getMergedProps,
 };
