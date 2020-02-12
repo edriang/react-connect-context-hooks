@@ -1,9 +1,7 @@
 import React from 'react';
-import { mergedConnectContextFactory } from 'react-connect-context-hooks';
 
 import TodoItem from './TodoItem';
-import { TodosContext } from '../store';
-import { MainContext } from '../../main/store';
+import { withStore } from '../../store';
 import filterVisibleTodos, { totalTodos, hiddenItemsCount } from '../utils/filterVisibleTodos';
 
 import { Todo } from '../../../typings';
@@ -33,11 +31,9 @@ const TodoList: React.FC<TodoListProps> = ({ todos, editTodo, deleteTodo, comple
   </ul>
 );
 
-const withMainAndTodos = mergedConnectContextFactory([MainContext, TodosContext]);
-
-export default withMainAndTodos(TodoList, {
-  stateSelectors: ['todos', 'visibilityFilter'],
-  actionSelectors: ['editTodo', 'deleteTodo', 'completeTodo'],
+export default withStore(TodoList, {
+  stateSelectors: ['todos.todos', 'main.visibilityFilter'],
+  actionSelectors: ['todos.editTodo', 'todos.deleteTodo', 'todos.completeTodo'],
   computedSelectors: {
     // This example might not be practical, but done this way to illustrate that computed selectors can override
     // previous selected props and also these functions can access values returned by previous ones

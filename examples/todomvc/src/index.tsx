@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 
 import App from './main/components/App';
 
-import StoreProvider, { useStore } from './store';
+import StoreProvider from './store';
 
 import 'todomvc-app-css/index.css';
 import './todoapp.scss';
@@ -14,7 +14,7 @@ const onInit = ({ fetchTodos }: any) => {
 }
 
 const selection = {
-  actionSelectors: ['fetchTodos'],
+  actionSelectors: ['todos.fetchTodos'],
 }
 
 render(

@@ -11,7 +11,6 @@ function hiddenItemsCount(todos: any[], totalTodos: number) {
 }
 
 export default function filterVisibleTodos(todos: Todo[], visibilityFilter: string) {
-    console.log('filterVisibleTodos');
     if (visibilityFilter === VISIBILITY_FILTERS.SHOW_ACTIVE) {
         return todos.filter((todo: Todo) => !todo.completed);
     }

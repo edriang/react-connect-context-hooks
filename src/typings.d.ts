@@ -45,3 +45,6 @@ export type ConnectContextOptions = {
 }
 
 export type ConnectContextFactory = (Component: React.ComponentType<any> | React.FC<any>, options: ConnectContextOptions) => React.FunctionComponent;
+
+export type ProviderCollection = CustomProvider[] | {[key: string]: CustomProvider}
+export type ContextCollection = React.Context<any>[] | {[key: string]: React.Context<any>}

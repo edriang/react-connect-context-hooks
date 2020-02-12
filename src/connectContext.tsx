@@ -7,6 +7,7 @@ import {
     ConnectContextFactory,
     KeyValue,
     ComputedSelectors,
+    ContextCollection,
 } from './typings';
 
   
@@ -46,7 +47,7 @@ function getContextSelection<T = any>(Context: React.Context<T>, options: Connec
     return [selectedState, selectedActions];
 }
 
-function mergedConnectContextFactory(contexts: React.Context<any>[]): ConnectContextFactory {
+function mergedConnectContextFactory(contexts: ContextCollection): ConnectContextFactory {
     return (Component: React.ComponentType, options: ConnectContextOptions = {}) => {
         return React.memo((props?: KeyValue) => {
             const mergedProps = getMergedPropsFromContexts(contexts, options, props);
@@ -65,22 +66,33 @@ function mergedConnectContextFactory(contexts: React.Context<any>[]): ConnectCon
     };
 };
 
-function useMergedConnectedContextFactory(contexts: React.Context<any>[]) {
+function useMergedConnectedContextFactory(contexts: ContextCollection) {
     return (options: ConnectContextOptions = {}): KeyValue => {
         return getMergedPropsFromContexts(contexts, options);
     };
 }
 
-function getMergedPropsFromContexts(contexts: React.Context<any>[], options: ConnectContextOptions, props: KeyValue = {}) {
+function getMergedPropsFromContexts(contexts: ContextCollection, options: ConnectContextOptions, props: KeyValue = {}) {
     const mergedState = {};
     const mergedActions = {};
 
-    contexts.forEach((Context) => {
-        const context: any = React.useContext(Context);
-
-        Object.assign(mergedState, context.state);
-        Object.assign(mergedActions, context.actions);
-    });
+    if (contexts instanceof Array) {
+        // DEPRECATE: just use Object notation
+        contexts.forEach((Context) => {
+            const context: any = React.useContext(Context);
+    
+            Object.assign(mergedState, context.state);
+            Object.assign(mergedActions, context.actions);
+        });
+    } else {
+        Object.keys(contexts).forEach((key: string) => {
+            const context: any = React.useContext(contexts[key]);
+    
+            mergedState[key] = context.state;
+            mergedActions[key] = context.actions;
+        });
+    }
+    
 
     const selectedState = selectValues(options.stateSelectors, mergedState, props);
     const selectedActions = selectValues(options.actionSelectors, mergedActions, props);
@@ -132,4 +144,5 @@ export {
     mergedConnectContextFactory,
     useMergedConnectedContextFactory,
     getMergedProps,
+    getMergedPropsFromContexts,
 };

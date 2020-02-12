@@ -279,19 +279,26 @@ You can pass an Array of keys you'd like to pick from the store; e.g.:
 
 In case you want to assign a different name to the properties on the resulting object, you can use the following syntax: 
 ```js
-['loggedInUser:user']
+['user:loggedInUser']
 ```
-This will get the value of the `user` property from the store and will provide it to the component as `loggedInUser` prop.
+This will get the value of the `user` property from the store and will provide it to the component as `loggedInUser` prop (similar to object destructuring with assignation).
 
 You can select nested properties by providing a `path`; e.g.:
 ```js
-['userName:user.firstName']
+['user.firstName:userName']
 ```
-Note that in this case is mandatory to specify a mapping property (`userName`) to assign the result of the selection (`user.firstName`).
+In this case, we are selecting the property `firstName` from `user`, and then returning with the name `userName`.
+
+If in the example above you didn't provide `:userName`, then the returning value will be assigned with a key equals to the last part of the selection path; e.g.: 
+
+```js
+['user.firstName']
+```
+This will select `user.firstName` from the store and return it as `firstName` on the resulting selection.
 
 The `path` notation also works for selecting values from an array; e.g.:
 ```js
-['firstTaskTitle:todos[0].title']
+['todos[0].title:firstTaskTitle']
 ```
 
 ### Selections using Object
@@ -351,17 +358,20 @@ import { TodosContext } from './todos/store';
 
 const TodosComponent = ({ mainStateProp, todosStateProp, todosActionProp, anotherProp}) => { } 
 
-const withMainAndTodos = mergedConnectContextFactory([MainContext, TodosContext]);
+const withMainAndTodos = mergedConnectContextFactory({
+  main: MainContext,
+  todos: TodosContext,
+});
 
 export default withMainAndTodos(TodosComponent, {
-  stateSelectors: ['mainStateProp', 'todosStateProp'],
-  actionSelectors: ['todosActionProp'],
+  stateSelectors: ['main.stateProp', 'todos.stateProp'],
+  actionSelectors: ['todos.actionProp'],
 });
 ```
 
-This helper function is similar to `connectContextFactory`, but instead receives an array of `Context` objects.
+This helper function is similar to `connectContextFactory`, but instead receives a dictionary of `Context` objects.
 
-Now, you can use your regular `selectors` for retrieving data from any of the specified store contexts.
+Now, you can use your regular `selectors` for retrieving data from any of the specified store contexts; the only consideration you should keep in mind is that now you'll need to specify the name (key) provided on `mergedConnectContextFactory`.
 
 **Note:** the stores' data will be merged together before applying `selectors`; this means that the order of `Context` objects in the Array might be important in case properties have the same name.
 
@@ -378,7 +388,10 @@ import { createMergedStore } from 'react-connect-context-hooks';
 import MainProvider from './main/store';
 import TodosProvider from './todos/store';
 
-const [StoreProvider, withStore, useStore] = createMergedStore([MainProvider, TodosProvider]);
+const [StoreProvider, withStore, useStore] = createMergedStore({
+  main: MainProvider,
+  todos: TodosProvider
+});
 
 export default StoreProvider;
 export {
@@ -386,6 +399,8 @@ export {
     useStore,
 };
 ```
+
+Note you provide a dictionary to `createMergedStore`; this is important to keep in mind, as now your selectors must be prefixed with this key. This is necessary to avoid property-collisions between different stores.
 
 Then you can wrap your `App` using this only provider:
 
@@ -403,7 +418,8 @@ const onInit = ({ fetchTodos }: any) => {
 }
 
 const selection = {
-  actionSelectors: ['fetchTodos'],
+  // As stated above, now you should use the `todos` prefix assigned to `TodosProvider` on previous step
+  actionSelectors: ['todos.fetchTodos'],
 }
 
 render(

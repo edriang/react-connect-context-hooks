@@ -1,7 +1,7 @@
 {
   "name": "react-connect-context-hooks",
-  "version": "0.7.0",
-  "description": "Redux-like connect bindings to use along useReducer + useContext.",
+  "version": "1.0.0",
+  "description": "Lightweight redux-like connect bindings which uses useReducer + useContext internally.",
   "keywords": [
     "react",
     "connect",

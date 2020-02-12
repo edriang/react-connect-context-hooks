@@ -237,7 +237,7 @@ describe('mergedConnectContextFactory', () => {
 
     it('overrides first context value with second one', () => {
         const ComponentWithCounter = withBothContexts(MockComponent, {
-            stateSelectors: ['testProp', 'testProp:testProp2']
+            stateSelectors: ['testProp', 'testProp2:testProp']
         });
 
         const { getByText } = render(
@@ -338,7 +338,7 @@ describe('useMergedConnectedContextFactory', () => {
 
     it('overrides first context value with second one', () => {
         const Component = getComponent({
-            stateSelectors: ['testProp', 'testProp:testProp2'],
+            stateSelectors: ['testProp', 'testProp2:testProp'],
         }, ['testProp']);
 
         const { getByText } = render(
@@ -370,5 +370,12 @@ describe('useMergedConnectedContextFactory', () => {
         
         const textMatch = `${mockState.testProp}-${secondMockState.testProp2}`;
         expect(getByText(textMatch)).toBeTruthy();
+    });
+});
+
+
+describe('getMergedPropsFromContexts', () => {
+    it('combines keyed context values', () => {
+
     });
 });

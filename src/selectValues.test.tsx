@@ -24,7 +24,7 @@ describe('selectValues', () => {
         });
 
         it('selects keys from data using array and assign to given key', () => {
-            const selection = ['counter:count'];
+            const selection = ['count:counter'];
 
             const result = selectValues(selection, mockedState);
 
@@ -32,11 +32,19 @@ describe('selectValues', () => {
         });
 
         it('selects path from data using array and assign to given key', () => {
-            const selection = ['userName:user.name'];
+            const selection = ['user.name:userName'];
 
             const result = selectValues(selection, mockedState);
 
             expect(result.userName).toBe(mockedState.user.name);
+        });
+
+        it('selects path from data using array and without mappedKey', () => {
+            const selection = ['user.name'];
+
+            const result = selectValues(selection, mockedState);
+
+            expect(result.name).toBe(mockedState.user.name);
         });
     });
 

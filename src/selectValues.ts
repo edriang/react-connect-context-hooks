@@ -22,12 +22,13 @@ function selectFromArray(selection: string[], data: KeyValue = {}): KeyValue {
     const selectionMap: KeyValue = {};
 
     selection.forEach(propName => {
-        const [key, value] = propName.split(':');
+        const [keyOnStore, mappedKey] = propName.split(':');
+        const lastDotPosition = keyOnStore.lastIndexOf('.');
 
-        if (value) {
-            selectionMap[key] = get(data, value);
+        if (lastDotPosition === -1) {
+            selectionMap[mappedKey || keyOnStore] = data[keyOnStore];
         } else {
-            selectionMap[key] = data[key];
+            selectionMap[mappedKey || keyOnStore.slice(lastDotPosition + 1)] = get(data, keyOnStore);
         }
     });
 
