@@ -63,7 +63,8 @@ const completeTodo = (dispatch: any) => async (todo: Todo) => {
     })
 }
 
-const completeAllTodos = (dispatch: any, { todos }: any) => async (completed: boolean) => {
+const completeAllTodos = (dispatch: any, getState: Function) => async (completed: boolean) => {
+    const { todos } = getState();
     const todosToUpdate = todos.filter((todo: Todo) => todo.completed !== completed);
 
     const promises = todosToUpdate.map((todo: Todo) => (
@@ -83,16 +84,17 @@ const completeAllTodos = (dispatch: any, { todos }: any) => async (completed: bo
     });
 }
 
-const clearCompleted = (dispatch: any, { todos }: TodosState) => async () => {
-    const todosToRemove = todos.filter((todo) => todo.completed === true);
+const clearCompleted = (dispatch: any, getState: Function) => async () => {
+    const { todos } = getState();
+    const todosToRemove = todos.filter((todo: Todo) => todo.completed === true);
 
-    const promises = todosToRemove.map((todo) => (
+    const promises = todosToRemove.map((todo: Todo) => (
         todosApi.deleteTodo(todo)
     ));
 
     await Promise.all(promises);
 
-    const updatedTodos = todos.filter((todo) => !todo.completed);
+    const updatedTodos = todos.filter((todo: Todo) => !todo.completed);
 
     dispatch({
         type: ACTIONS.UPDATE_ALL_TODOS,

@@ -14,13 +14,13 @@ const providerContextMap = new Map<CustomProvider, React.Context<any>>();
 function createContextProvider(reducer: React.Reducer<any, any>, initialState: KeyValue, actionCreators: ActionCreators): CreateContextProviderReturn {
     const Context = React.createContext({});
     const Provider = ({ onInit, ...props }: KeyValue) => {
+        // TODO: add better typing
+        const contextValue = React.useRef<any>({});
         const [state, dispatch] = React.useReducer(reducer, initialState);
-        const actions = getBindedActions(actionCreators, dispatch, state);
+        const actions = React.useMemo(() => getBindedActions(actionCreators, dispatch, contextValue), [actionCreators]);
 
-        const contextValue = {
-            state: Object.freeze(state),
-            actions: Object.freeze(actions),
-        };
+        contextValue.current.state = Object.freeze(state);
+        contextValue.current.actions = Object.freeze(actions);
 
         if (onInit) {
             const [options, onInitFn] = onInit;
@@ -35,7 +35,7 @@ function createContextProvider(reducer: React.Reducer<any, any>, initialState: K
         }
 
         return (
-            <Context.Provider value={contextValue} {...props}></Context.Provider>
+            <Context.Provider value={{...contextValue.current}} {...props}></Context.Provider>
         );
     };
     providerContextMap.set(Provider, Context);
@@ -44,11 +44,12 @@ function createContextProvider(reducer: React.Reducer<any, any>, initialState: K
     
 }
 
-function getBindedActions(actions: ActionCreators, dispatch: React.Dispatch<any>, state: KeyValue): {[key: string]: Function} {
+function getBindedActions(actions: ActionCreators, dispatch: React.Dispatch<any>, contextValue: any): {[key: string]: Function} {
     const bindedActions = {};
+    const getState = () => contextValue.current.state;
 
     Object.entries(actions).forEach(([key, value]) => {
-        bindedActions[key] = value(dispatch, state);
+        bindedActions[key] = value(dispatch, getState);
     });
 
     return bindedActions;

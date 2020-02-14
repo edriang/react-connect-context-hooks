@@ -36,8 +36,6 @@ function createMergedStore(providers: ProviderCollection): [CustomProvider, Conn
             wrapper = <Provider>{ previousWrapper }</Provider>
         });
 
-        console.log(wrapper)
-
         return React.useMemo(() => wrapper, []);
     }
 

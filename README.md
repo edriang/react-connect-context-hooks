@@ -182,8 +182,8 @@ export default () => {
 ### Actions
 
 Actions are higher-order functions that receive two parameters:
-- `dispatch`: used to trigger an action to be handled by the reducer.
-- `state`: reference to the current state values of your store.
+- `dispatch`: a function used to trigger an action to be handled by the reducer.
+- `getState`: a function to retrieve a reference to the current state values of your store.
 
 This function MUST return a function. The returned function can be defined as you like with zero or more parameters and even as `async`.
 
@@ -197,14 +197,14 @@ const ACTIONS = {
     DECREMENT: 'DECREMENT',
 };
 
-const increment = (dispatch: any, state: any) => (amount: number) => {
+const increment = (dispatch: any, getState: Function) => (amount: number) => {
     dispatch({
         type: ACTIONS.INCREMENT,
         payload: { amount },
     });
 }
 
-const decrement = (dispatch: any, state: any) => (amount: number) => {
+const decrement = (dispatch: any, getState: Function) => (amount: number) => {
     dispatch({
         type: ACTIONS.DECREMENT,
         payload: { amount },
