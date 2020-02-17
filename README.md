@@ -19,6 +19,7 @@
         - [Merged Store](#merged-store)
         - [Deriving State](#deriving-state)
         - [Fetching initial data](#fetching-initial-data)
+        - [Store without reducer](#store-without-reducer)
     - [Problems or Suggestions](#problems-or-suggestions)
     - [License](#license)
 
@@ -512,6 +513,101 @@ render(
 
 ```
 
+### Store without reducer
+
+There are cases in which you'll need to add some values to a Context to make them available to every component, but those values won't change so often, for example, to keep track of authentication. In those cases, creating a `reducer` might be a little overkill, so you can skip it and use the library as follows:
+
+> *Check [this codesandbox](https://codesandbox.io/s/rcch-context-auth-ut64i) for quickly testing this approach, or check the auth0 example located at `examples/react-spa`;
+
+```js
+// authStore.js
+
+import createContextProvider, { connectContextFactory } from 'react-connect-context-hooks';
+import authService from './authService';
+
+const loginAction = (dispatch, getState) => async (username, password) => {
+  dispatch({ loading: true });
+
+  const user = await authService.login(username, password);
+
+  dispatch({ loading: false, user, isAuthenticated: false });
+}
+
+const actions = {
+  login: loginAction
+}
+
+const initialState = {
+    isAuthenticated: false,
+    user: {},
+    loading: false,
+}
+
+const [AuthProvider, AuthContext] = createContextProvider(initialState, actions);
+
+const withAuth = connectContextFactory(AuthContext);
+
+export default AuthProvider;
+
+export {
+    withAuth,
+};
+```
+
+As you can see, we didn't provide a `reducer` and instead just provided the initial state and actions.
+
+You'll notice that `actions` are created as regular `actionCreators`; they receive a `dispatch` and `getState` functions and must return a function that will be called by consumers/connected components.
+
+The main difference is that you'll call `dispatch` with an object to `patch` (update) your current state, instead of triggering reducer actions to produce the mutations.
+
+And that's it for the store... for completeness, below you have an example of how will look a component using this approach:
+
+```js
+// App.js
+
+import React from 'react';
+import { withAuth } from "./authStore";
+
+const App = ({ loading, isAuthenticated, user, login, logout }) => {
+  if (loading) {
+    return <span>Loading...</span>
+  }
+  if (isAuthenticated) {
+    return (
+      <div>
+        <h1>{`Hello ${user.name}!!`}</h1>
+        <button onClick={logout}>Log out</button>
+      </div>
+    )
+  }
+  return <button onClick={() => login("test", "pass")}>Log in</button>
+}
+
+export default withAuth(App, {
+  stateSelectors: ['loading', 'isAuthenticated', 'user'],
+  actionSelectors: ['login', 'logout'],
+});
+```
+
+Finally, remember to wrap your App with the context provider:
+
+```js
+// index.js
+
+import React from "react";
+import ReactDOM from "react-dom";
+
+import App from "./App";
+import AuthProvider from "./authStore";
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(
+  <AuthProvider>
+    <App />
+  </AuthProvider>,
+  rootElement
+);
+```
 
 ## Problems or Suggestions
 
