@@ -18,7 +18,7 @@ function connectContext<T = any>(Context: React.Context<T>, Component: React.Com
 
         return React.useMemo(() => (
             <Component {...mergedProps} />
-        ), memoizableValues(selectedState));
+        ), memoizableValues(mergedProps));
     });
 };
 
@@ -39,7 +39,7 @@ function useConnectedContextFactory<T = any>(Context: React.Context<T>) {
 
 function getContextSelection<T = any>(Context: React.Context<T>, options: ConnectContextOptions = {}, props: KeyValue = {}): [KeyValue, KeyValue] {
     const context: any = React.useContext(Context);
-    const { stateSelectors, actionSelectors } = normalizedContextOptions(options);
+    const { stateSelectors, actionSelectors } = React.useMemo(() => normalizedContextOptions(options), [options]);
 
     const selectedState = selectValues(stateSelectors, context.state, props);
     const selectedActions = selectValues(actionSelectors, context.actions, props);
@@ -117,7 +117,7 @@ function getMergedProps(selectedState: KeyValue, selectedActions: KeyValue, prop
 }
 
 function normalizedContextOptions(options: ConnectContextOptions): ConnectContextOptions {
-    const normalized: KeyValue = {};
+    const normalized: KeyValue = { ...options };
 
     // DEPRECATED
     if (options.stateMappers) {
@@ -127,7 +127,7 @@ function normalizedContextOptions(options: ConnectContextOptions): ConnectContex
         normalized.actionSelectors = options.actionMappers;
     }
 
-    return Object.assign({}, options, normalized);
+    return normalized;
 }
 
 function memoizableValues(value: any[] | Object): any[] {

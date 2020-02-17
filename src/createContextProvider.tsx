@@ -11,13 +11,30 @@ import { getMergedProps } from './connectContext';
 
 const providerContextMap = new Map<CustomProvider, React.Context<any>>();
 
-function createContextProvider(reducer: React.Reducer<any, any>, initialState: KeyValue, actionCreators: ActionCreators): CreateContextProviderReturn {
+
+function createContextProvider(reducer: React.Reducer<any, any>, initialState: KeyValue, actionCreators: ActionCreators): CreateContextProviderReturn;
+
+function createContextProvider(initialState: KeyValue, actionCreators: ActionCreators): CreateContextProviderReturn
+
+function createContextProvider(...args: any[]): CreateContextProviderReturn {
     const Context = React.createContext({});
     const Provider = ({ onInit, ...props }: KeyValue) => {
         // TODO: add better typing
         const contextValue = React.useRef<any>({});
-        const [state, dispatch] = React.useReducer(reducer, initialState);
-        const actions = React.useMemo(() => getBindedActions(actionCreators, dispatch, contextValue), [actionCreators]);
+        let reducer: any, initialState: any, actionCreators: any;
+        let state: any, actions: any, dispatch: any, setState: any;
+
+        if (typeof args[0] === 'function') {
+            [reducer, initialState, actionCreators] = args;
+            [state, dispatch] = React.useReducer(reducer, initialState);
+            
+        } else {
+            [initialState, actionCreators] = args;
+            [state, setState] = React.useState(initialState);
+            dispatch = React.useMemo(() => createStateSetterDispatch(setState, contextValue), [initialState]);
+        }
+
+        actions = React.useMemo(() => getBindedActions(actionCreators, dispatch, contextValue), [actionCreators]);
 
         contextValue.current.state = Object.freeze(state);
         contextValue.current.actions = Object.freeze(actions);
@@ -27,7 +44,7 @@ function createContextProvider(reducer: React.Reducer<any, any>, initialState: K
 
             const selectedState = selectValues(options.stateSelectors, state, props);
             const selectedActions = selectValues(options.actionSelectors, actions, props);
-            const mergedProps = getMergedProps(selectedState, selectedActions, {}, options.computedSelectors);
+            const mergedProps = getMergedProps(selectedState, selectedActions, props, options.computedSelectors);
 
             React.useMemo(() => {
                 onInitFn(mergedProps);
@@ -53,6 +70,14 @@ function getBindedActions(actions: ActionCreators, dispatch: React.Dispatch<any>
     });
 
     return bindedActions;
+}
+
+function createStateSetterDispatch(dispatch: React.Dispatch<any>, contextValue: any): React.Dispatch<any> {
+    return (params: any) => {
+        const newState = { ...contextValue.current.state, ...params };
+
+        dispatch(newState);
+    }
 }
 
 function getProviderContext(Provider: CustomProvider): React.Context<any> {
