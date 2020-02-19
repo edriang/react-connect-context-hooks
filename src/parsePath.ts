@@ -1,4 +1,4 @@
-const validChars = 'abcdefghijklmnopqrstuvwxyz1234567890_$'.split('').reduce((o, l) => { o[l] = 1; return o }, {});
+const validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_$'.split('').reduce((o, l) => { o[l] = 1; return o }, {});
 
 function parse(path: string) {
   const pathParts = createParser(path);

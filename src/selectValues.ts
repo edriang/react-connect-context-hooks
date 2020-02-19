@@ -29,11 +29,14 @@ function selectFromArray(selection: string[], data: KeyValue = {}): KeyValue {
         const [keyOnStore, mappedKey] = propName.split(':');
         const lastDotPosition = keyOnStore.lastIndexOf('.');
 
-        if (lastDotPosition === -1) {
-            selectionMap[mappedKey || keyOnStore] = data[keyOnStore];
-        } else {
-            selectionMap[mappedKey || keyOnStore.slice(lastDotPosition + 1)] = get(data, keyOnStore);
+        let getter = gettersMap.get(keyOnStore);
+
+        if (!getter) {
+            getter = parse(keyOnStore);
+            gettersMap.set(keyOnStore, getter);
         }
+
+        selectionMap[mappedKey || keyOnStore.slice(lastDotPosition + 1)] = getter(data);
     });
 
     return selectionMap;
@@ -54,23 +57,9 @@ function selectFromObject(selection: KeyValueMap, data: KeyValue, props: KeyValu
         } else {
             selectionMap[key] = value(data, props);
         }
-    })
+    });
 
     return selectionMap;
 }
-
-function get(obj: Object, path: string, def?: any) {
-    const fullPath = path
-        .replace(/\[/g, '.')
-        .replace(/]/g, '')
-        .split('.')
-        .filter(Boolean)
-  
-    return fullPath.every(everyFunc) ? obj : def
-  
-    function everyFunc (step: string) {
-        return !(step && (obj = obj[step]) === undefined)
-    }
-  }
 
 export default selectValues;
