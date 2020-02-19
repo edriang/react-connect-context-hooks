@@ -1,8 +1,12 @@
+import parse from './parsePath';
+
 import {
     Selector,
     KeyValueMap,
     KeyValue,
 } from './typings';
+
+const gettersMap = new Map();
 
 const selectValues = (selection: Selector = [], data: KeyValue = {}, props: KeyValue = {}) => {
     if (selection instanceof Array) {
@@ -40,7 +44,13 @@ function selectFromObject(selection: KeyValueMap, data: KeyValue, props: KeyValu
 
     Object.entries(selection).forEach(([key, value]) => {
         if (typeof value === 'string') {
-            selectionMap[key] = get(data, value);
+            let getter = gettersMap.get(value);
+
+            if (!getter) {
+                getter = parse(value);
+                gettersMap.set(value, getter);
+            }
+            selectionMap[key] = getter(data);
         } else {
             selectionMap[key] = value(data, props);
         }
