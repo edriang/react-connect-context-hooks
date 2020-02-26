@@ -1,7 +1,6 @@
 import React from 'react';
 
-import selectValues from './selectValues';
-import parseSelectors from './ignore-parsed-options';
+import parseSelectors, { executeParsedSelectors as selectValues } from './parseSelectors';
 
 import {
     ConnectContextOptions,
@@ -62,12 +61,16 @@ function getContextSelection<T = any>(Context: React.Context<T>, options: Connec
 
 function mergedConnectContextFactory(contexts: ContextCollection): ConnectContextFactory {
     return (Component: React.ComponentType, options: ConnectContextOptions = {}) => {
+        const parsedOptions = normalizedContextOptions(options);
+        parsedOptions.stateSelectors = parseSelectors(parsedOptions.stateSelectors);
+        parsedOptions.actionSelectors = parseSelectors(parsedOptions.actionSelectors);
+
         return React.memo((props?: KeyValue) => {
-            const mergedProps = getMergedPropsFromContexts(contexts, options, props);
+            const mergedProps = getMergedPropsFromContexts(contexts, parsedOptions, props);
 
             // DEPRECATED
-            if (options.afterMerge) {
-                const afterMergeProps = Object.assign({}, mergedProps, options.afterMerge(mergedProps) || {});
+            if (parsedOptions.afterMerge) {
+                const afterMergeProps = Object.assign({}, mergedProps, parsedOptions.afterMerge(mergedProps) || {});
 
                 return <Component {...afterMergeProps} />;
             }
@@ -81,7 +84,15 @@ function mergedConnectContextFactory(contexts: ContextCollection): ConnectContex
 
 function useMergedConnectedContextFactory(contexts: ContextCollection) {
     return (options: ConnectContextOptions = {}): KeyValue => {
-        return getMergedPropsFromContexts(contexts, options);
+        const parsedOptions = React.useMemo(() => {
+            const parsedOptions = normalizedContextOptions(options);
+            parsedOptions.stateSelectors = parseSelectors(parsedOptions.stateSelectors);
+            parsedOptions.actionSelectors = parseSelectors(parsedOptions.actionSelectors);
+
+            return parsedOptions;
+        }, [options]);
+
+        return getMergedPropsFromContexts(contexts, parsedOptions);
     };
 }
 
@@ -158,4 +169,5 @@ export {
     useMergedConnectedContextFactory,
     getMergedProps,
     getMergedPropsFromContexts,
+    normalizedContextOptions,
 };

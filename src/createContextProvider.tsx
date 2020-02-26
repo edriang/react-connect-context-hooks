@@ -6,8 +6,8 @@ import {
     CreateContextProviderReturn,
     CustomProvider,
 } from './typings';
-import selectValues from './selectValues';
-import { getMergedProps } from './connectContext';
+import parseSelectors, { executeParsedSelectors as selectValues } from './parseSelectors';
+import { getMergedProps, normalizedContextOptions } from './connectContext';
 
 const providerContextMap = new Map<CustomProvider, React.Context<any>>();
 
@@ -42,11 +42,15 @@ function createContextProvider(...args: any[]): CreateContextProviderReturn {
         if (onInit) {
             const [options, onInitFn] = onInit;
 
-            const selectedState = selectValues(options.stateSelectors, state, props);
-            const selectedActions = selectValues(options.actionSelectors, actions, props);
-            const mergedProps = getMergedProps(selectedState, selectedActions, props, options.computedSelectors);
-
             React.useMemo(() => {
+                const parsedOptions = normalizedContextOptions(options);
+                parsedOptions.stateSelectors = parseSelectors(parsedOptions.stateSelectors);
+                parsedOptions.actionSelectors = parseSelectors(parsedOptions.actionSelectors);
+    
+                const selectedState = selectValues(options.stateSelectors, state, props);
+                const selectedActions = selectValues(options.actionSelectors, actions, props);
+                const mergedProps = getMergedProps(selectedState, selectedActions, props, options.computedSelectors);
+
                 onInitFn(mergedProps);
             }, []);
         }

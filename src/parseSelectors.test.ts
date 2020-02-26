@@ -1,4 +1,4 @@
-import parseSelectors, { executeParsedSelectors } from './ignore-parsed-options';
+import parseSelectors, { executeParsedSelectors } from './parseSelectors';
 
 const state = {
     todos: [{name: 'Test Name'}],
