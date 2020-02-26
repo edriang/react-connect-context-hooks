@@ -16,7 +16,7 @@ const Counter: React.FC<CounterProps> = ({ count, increment, decrement }) => {
         setAmount(parseInt(event.target.value));
     }
 
-    useCountLogger();
+    // useCountLogger();
 
     return (
         <div>

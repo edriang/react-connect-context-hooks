@@ -1,6 +1,7 @@
 import React from 'react';
 
 import selectValues from './selectValues';
+import parseSelectors from './ignore-parsed-options';
 
 import {
     ConnectContextOptions,
@@ -23,15 +24,27 @@ function connectContext<T = any>(Context: React.Context<T>, Component: React.Com
 };
 
 function connectContextFactory<T = any>(Context: React.Context<T>): ConnectContextFactory {
-    return (Component: React.ComponentType, options: ConnectContextOptions = {}) => (
-        connectContext(Context, Component, options)
-    );
+    return (Component: React.ComponentType, options: ConnectContextOptions = {}) => {
+        const parsedOptions = normalizedContextOptions(options);
+        parsedOptions.stateSelectors = parseSelectors(parsedOptions.stateSelectors);
+        parsedOptions.actionSelectors = parseSelectors(parsedOptions.actionSelectors);
+
+        return connectContext(Context, Component, parsedOptions);
+    };
 };
 
 function useConnectedContextFactory<T = any>(Context: React.Context<T>) {
     return (options: ConnectContextOptions = {}): KeyValue => {
-        const [selectedState, selectedActions] = getContextSelection(Context, options);
-        const mergedProps = getMergedProps(selectedState, selectedActions, {}, options.computedSelectors);
+        const parsedOptions = React.useMemo(() => {
+            const parsedOptions = normalizedContextOptions(options);
+            parsedOptions.stateSelectors = parseSelectors(parsedOptions.stateSelectors);
+            parsedOptions.actionSelectors = parseSelectors(parsedOptions.actionSelectors);
+
+            return parsedOptions;
+        }, [options]);
+
+        const [selectedState, selectedActions] = getContextSelection(Context, parsedOptions);
+        const mergedProps = getMergedProps(selectedState, selectedActions, {}, parsedOptions.computedSelectors);
 
         return mergedProps;
     }

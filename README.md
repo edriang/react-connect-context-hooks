@@ -20,6 +20,7 @@
         - [Deriving State](#deriving-state)
         - [Fetching initial data](#fetching-initial-data)
         - [Store without reducer](#store-without-reducer)
+    - [Benefits of using Context](#benefits-of-using-context)
     - [Problems or Suggestions](#problems-or-suggestions)
     - [License](#license)
 
@@ -55,7 +56,7 @@ npm install --save react-connect-context-hooks
 
 Since React hooks are available, a lot of discussion among the developer-community arose regarding if external tooling (such as `redux`) is needed to implement global state management in your apps.
 
-While it is possible to implement a simple redux-like functionality just with `useReducer` + `useContext`, there are good recommendations and practices that are good to consider, especially for growing applications.
+While it is possible to implement a simple redux-like functionality just with `useReducer` + `useContext`, there are good recommendations and practices to follow, especially for growing applications.
 
 This library allows you implementing good practices for your custom state-management solution using React hooks while reducing the boilerplate for every `Provider/Consumer` you need to create.
 
@@ -608,6 +609,19 @@ ReactDOM.render(
   rootElement
 );
 ```
+
+## Benefits of using Context
+
+The main benefit of a `Context` based state-management solution is that you can co-locate your state closer to the components using it. This approach goes against having a big-global state for your entire app (like in Redux).
+
+Having co-located state is a good practice specially if you are using client-side routing and lazy-loading, because you are going to load and unload pieces of the UI and when those sections are detached the state related to them should probably be garbage-collected too.
+
+On the other hand, in the scenarios where you need to have part of your state global, you can easily move the provider related to that specific state higher on the components hierarchy.
+
+Combining different `Contexts` to create a merged store is also something possible with this library. You can create a combined provider (`Store`) or merge them on demmand whenever you need it.
+
+Then, you can use `selectors` to access specific pieces of your state and trust this library to update the underlying components only when some of those properties changes. This leads to important performance benefits against using `React.ContextAPI` by your own (if you are not cautious).
+
 
 ## Problems or Suggestions
 
