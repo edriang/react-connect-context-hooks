@@ -1,7 +1,8 @@
-import todosApi from './todosApi';
+// NOTE: todosApi could be easily switched to fetch from remote services
+// Take a look at `./todosApi` for concrete example
+import todosApi from './todosLocalApi';
 
 import { Todo, NewTodo } from '../../../typings';
-import { TodosState } from './todosReducer';
 
 const ACTIONS = {
     UPDATE_ALL_TODOS: Symbol('UPDATE_ALL_TODOS'),
