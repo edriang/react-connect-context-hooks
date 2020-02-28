@@ -1,5 +1,3 @@
-const gettersMap = new Map();
-
 import parse from './parsePath';
 
 function parseSelectors(selector: any) {
@@ -8,12 +6,7 @@ function parseSelectors(selector: any) {
             const [keyOnStore, mappedKey] = current.split(':');
             const lastDotPosition = keyOnStore.lastIndexOf('.');
 
-            let getter = gettersMap.get(keyOnStore);
-
-            if (!getter) {
-                getter = parse(keyOnStore);
-                gettersMap.set(keyOnStore, getter);
-            }
+            const getter = parse(keyOnStore);
 
             object[mappedKey || keyOnStore.slice(lastDotPosition + 1)] = getter;
 
@@ -24,12 +17,8 @@ function parseSelectors(selector: any) {
 
         Object.entries(selector).forEach(([key, value]) => {
             if (typeof value === 'string') {
-                let getter = gettersMap.get(value);
-
-                if (!getter) {
-                    getter = parse(value);
-                    gettersMap.set(value, getter);
-                }
+                const getter = parse(value);
+                
                 parsedSelector[key] = getter;
             } else {
                 parsedSelector[key] = value;
