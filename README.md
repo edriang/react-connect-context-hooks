@@ -366,16 +366,16 @@ const withMainAndTodos = mergedConnectContextFactory({
 });
 
 export default withMainAndTodos(TodosComponent, {
-  stateSelectors: ['main.stateProp', 'todos.stateProp'],
-  actionSelectors: ['todos.actionProp'],
+  stateSelectors: ['main.stateProp:mainStateProp', 'todos.stateProp:todosStateProp'],
+  actionSelectors: ['todos.actionProp:todosActionProp'],
 });
 ```
 
 This helper function is similar to `connectContextFactory`, but instead receives a dictionary of `Context` objects.
 
-Now, you can use your regular `selectors` for retrieving data from any of the specified store contexts; the only consideration you should keep in mind is that now you'll need to specify the name (key) provided on `mergedConnectContextFactory`.
+Then, you can use regular `selectors` for retrieving data from any of the specified store contexts; the only consideration you should keep in mind is that now you'll need to specify the name (key) provided on `mergedConnectContextFactory` Context-dictionary (in the example `main` and `todos`).
 
-**Note:** the stores' data will be merged together before applying `selectors`; this means that the order of `Context` objects in the Array might be important in case properties have the same name.
+**Note:** the stores' data will be merged together before applying `selectors` so you have access to the value of all the contexts.
 
 
 ### Merged Store
