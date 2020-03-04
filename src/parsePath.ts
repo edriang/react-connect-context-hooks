@@ -1,5 +1,3 @@
-const validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_$'.split('').reduce((o, l) => { o[l] = 1; return o }, {});
-
 function parse(path: string) {
   const pathParts = createParser(path);
 
@@ -35,6 +33,10 @@ function createParser(path: string) {
     char = path[i];
     switch(char) {
       case '.':
+        if (bracesOpen) {
+          word.push(char);
+          continue;
+        }
         finishWordIfNotEmpty();
         break;
       case '[':
@@ -52,9 +54,6 @@ function createParser(path: string) {
         bracesOpen = false;
         break;
       default:
-        if (!validChars[char]) {
-          throw `Parse error: invalid character ${char}`;
-        }
         word.push(char);
     }
   }

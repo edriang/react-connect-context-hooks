@@ -2,9 +2,17 @@ import parse from './parsePath';
 
 const object = { a: {b: {c: {d: [{}, {e: 'F'}]}}}};
 const array = [{}, [{a: 'b'}, ['a']]];
+const weirdObject = {
+    'some.key': 'someDotKey', 
+    'some:key': 'someColonKey', 
+    'some!InvalidKey?': 'someInvalidKey',
+    keyValid: {
+        'nested,Invalid': 'nestedInvalid',
+    },
+};
 
 describe('parse', () => {
-    describe('object parser', () => {
+    describe('object accessor parser', () => {
         it('parses single property', () => {
             const getter = parse('a');
     
@@ -48,7 +56,7 @@ describe('parse', () => {
         });
     });
 
-    describe('array parser', () => {
+    describe('array accessor parser', () => {
         it('parses array', () => {
             const getter = parse('[1]');
     
@@ -68,11 +76,33 @@ describe('parse', () => {
         });
     });
 
-    describe('wrong paths', () => {
-        it('throws if provided path with non-supported character', () => {
-            expect(() => parse('a.b.a!')).toThrow();
+    describe('supports arbitrary keys', () => {
+        it('parses key with colons', () => {
+            const getter = parse('[some:key]');
+    
+            expect(getter(weirdObject)).toBe(weirdObject['some:key']);
         });
 
+        it('parses key with dots', () => {
+            const getter = parse('[some.key]');
+    
+            expect(getter(weirdObject)).toBe(weirdObject['some.key']);
+        });
+
+        it('parses key with non-standard characters', () => {
+            const getter = parse('[some!InvalidKey?]');
+    
+            expect(getter(weirdObject)).toBe(weirdObject['some!InvalidKey?']);
+        });
+
+        it('parses nested key with non-standard characters', () => {
+            const getter = parse('keyValid[nested,Invalid]');
+    
+            expect(getter(weirdObject)).toBe(weirdObject.keyValid['nested,Invalid']);
+        });
+    });
+
+    describe('wrong paths', () => {
         it('throws if provided nested braces', () => {
             expect(() => parse('[[1]]')).toThrow();
         });
