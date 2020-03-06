@@ -15,10 +15,10 @@
         - [Selections using Object](#selections-using-object)
         - [Selections using Function](#selections-using-function)
     - [Other Use-cases](#other-use-cases)
+        - [Fetching initial data](#fetching-initial-data)
         - [Combining Contexts](#combining-contexts)
         - [Merged Store](#merged-store)
         - [Deriving State](#deriving-state)
-        - [Fetching initial data](#fetching-initial-data)
         - [Store without reducer](#store-without-reducer)
     - [Benefits of using Context](#benefits-of-using-context)
     - [Problems or Suggestions](#problems-or-suggestions)
@@ -350,6 +350,36 @@ Lastly, you can specify a `Function` to create the resulting object from the `st
 
 ## Other Use-cases
 
+### Fetching initial data
+
+Sometimes you'll need to call some service when the application starts so you can populate your store with initial data.
+
+To cover that scenario, the `Provider` returned by `createContextProvider` accepts a special property called `onInit`, which expects to receive a tuple (array) with two values: a selections object and a function.
+
+The `selection object` is the same as the one used with connect HOC and allows selecting only what you need from your store, as well as applying derived state functions.
+
+The `function` provided as second parameter will be called with the result of the previous selection.
+
+Note that, if provided, `onInit` function will be triggered only once when the Provider is first rendered; e.g.:
+
+```js
+// index.tsx
+
+const selectionOption = {
+  actions: ['fetchTodos'],
+}
+
+const onInit({ fetchTodos }) => fetchTodos();
+
+render(
+  <TodosProvider onInit={[selectionOption, onInit]}>
+    <App />
+  </TodosProvider>
+  document.getElementById('root')
+)
+
+```
+
 ### Combining Contexts
 
 There are scenarios in which you'll need to access more than one `Context` to gather all the values your component needs. In such cases you can use `mergedConnectContextFactory` helper function; e.g.:
@@ -484,36 +514,6 @@ The `computedSelectors` option expects an object with the following signature:
 **Important:** `computedSelectors` are memoized using `React.memo()`; this avoids re-computing a giving selector if none of the listed dependencies changed.
 
 
-### Fetching initial data
-
-Sometimes you'll need to call some service when the application starts so you can populate your store with initial data.
-
-To cover that scenario, the `Provider` returned by `createContextProvider` accepts a special property called `onInit`, which expects to receive a tuple (array) with two values: a selections object and a function.
-
-The `selection object` is the same as the one used with connect HOC and allows selecting only what you need from your store, as well as applying derived state functions.
-
-The `function` provided as second parameter will be called with the result of the previous selection.
-
-Note that, if provided, `onInit` function will be triggered only once when the Provider is first rendered; e.g.:
-
-```js
-// index.tsx
-
-const selectionOption = {
-  actions: ['fetchTodos'],
-}
-
-const onInit({ fetchTodos }) => fetchTodos();
-
-render(
-  <TodosProvider onInit={[selectionOption, onInit]}>
-    <App />
-  </TodosProvider>
-  document.getElementById('root')
-)
-
-```
-
 ### Store without reducer
 
 There are cases in which you'll need to add some values to a Context to make them available to every component, but those values won't change so often, for example, to keep track of authentication. In those cases, creating a `reducer` might be a little overkill, so you can skip it and use the library as follows:
@@ -529,9 +529,14 @@ import authService from './authService';
 const loginAction = (dispatch, getState) => async (username, password) => {
   dispatch({ loading: true });
 
-  const user = await authService.login(username, password);
+  try {
+    const user = await authService.login(username, password);
 
-  dispatch({ loading: false, user, isAuthenticated: false });
+    dispatch({ loading: false, user, isAuthenticated: true });
+
+  } catch (error) {
+    dispatch({ loading: false, error });
+  }
 }
 
 const actions = {
@@ -542,6 +547,7 @@ const initialState = {
     isAuthenticated: false,
     user: {},
     loading: false,
+    error: null,
 }
 
 const [AuthProvider, AuthContext] = createContextProvider(initialState, actions);
