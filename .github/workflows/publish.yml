@@ -1,6 +1,10 @@
-name: Node.js CI
+name: PR Builder
 
-on: [push]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   build:
@@ -20,4 +24,3 @@ jobs:
     - run: npm ci
     - run: npm run build
     - run: npm test
-    - run: npm publish
