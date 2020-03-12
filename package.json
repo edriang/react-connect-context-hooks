@@ -55,6 +55,7 @@
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-peer-deps-external": "^2.2.0",
     "rollup-plugin-typescript2": "^0.17.0",
+    "semantic-release": "^17.0.4",
     "typescript": "^2.8.3"
   },
   "files": [
