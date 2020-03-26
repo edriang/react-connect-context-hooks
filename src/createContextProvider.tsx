@@ -47,9 +47,9 @@ function createContextProvider(...args: any[]): CreateContextProviderReturn {
                 parsedOptions.stateSelectors = parseSelectors(parsedOptions.stateSelectors);
                 parsedOptions.actionSelectors = parseSelectors(parsedOptions.actionSelectors);
     
-                const selectedState = selectValues(options.stateSelectors, state, props);
-                const selectedActions = selectValues(options.actionSelectors, actions, props);
-                const mergedProps = getMergedProps(selectedState, selectedActions, props, options.computedSelectors);
+                const selectedState = selectValues(parsedOptions.stateSelectors, state, props);
+                const selectedActions = selectValues(parsedOptions.actionSelectors, actions, props);
+                const mergedProps = getMergedProps(selectedState, selectedActions, props, parsedOptions.computedSelectors);
 
                 onInitFn(mergedProps);
             }, []);

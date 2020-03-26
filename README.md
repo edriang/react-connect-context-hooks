@@ -366,7 +366,7 @@ Note that, if provided, `onInit` function will be triggered only once when the P
 // index.tsx
 
 const selectionOption = {
-  actions: ['fetchTodos'],
+  actionSelectors: ['fetchTodos'],
 }
 
 const onInit({ fetchTodos }) => fetchTodos();
