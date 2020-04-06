@@ -38,5 +38,8 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "acorn": "^7.1.1",
+    "minimist": "^1.2.5"
+  }
 }

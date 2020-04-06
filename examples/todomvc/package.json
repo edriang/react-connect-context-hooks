@@ -5,6 +5,8 @@
   "homepage": "https://edriang.github.io/react-connect-context-hooks",
   "devDependencies": {
     "@types/classnames": "^2.2.9",
+    "acorn": "^7.1.1",
+    "minimist": "^1.2.5",
     "node-sass": "^4.13.1",
     "react-scripts": "^3.0.0",
     "react-test-renderer": "^16.8.6"
