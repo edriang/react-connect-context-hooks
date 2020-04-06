@@ -1,3 +1,12 @@
+# [1.7.0](https://github.com/edriang/react-connect-context-hooks/compare/v1.6.1...v1.7.0) (2020-04-06)
+
+## [1.6.1](https://github.com/edriang/react-connect-context-hooks/compare/v1.6.0...v1.6.1) (2020-03-26)
+
+
+### Bug Fixes
+
+* onInit selectors uses parsedOptions ([7641026](https://github.com/edriang/react-connect-context-hooks/commit/7641026feece56c08fd3bc9101cd2a00a6f727b1))
+
 # [1.6.0](https://github.com/edriang/react-connect-context-hooks/compare/v1.5.0...v1.6.0) (2020-03-12)
 
 
