@@ -21,6 +21,8 @@
         - [Deriving State](#deriving-state)
         - [Store without reducer](#store-without-reducer)
     - [Benefits of using Context](#benefits-of-using-context)
+    - [Testing](#testing)
+        - [Testing your connected components with HOC](#testing-your-connected-components-with-hoc)
     - [Problems or Suggestions](#problems-or-suggestions)
     - [License](#license)
 
@@ -627,6 +629,88 @@ On the other hand, in the scenarios where you need to have part of your state gl
 Combining different `Contexts` to create a merged store is also something possible with this library. You can create a combined provider (`Store`) or merge them on demmand whenever you need it.
 
 Then, you can use `selectors` to access specific pieces of your state and trust this library to update the underlying components only when some of those properties changes. This leads to important performance benefits against using `React.ContextAPI` by your own (if you are not cautious).
+
+
+## Testing
+
+### Testing your connected components with HOC
+
+Using the HOC is the recommended way to connect your components with your Context, not only for the performance improvements but also because makes unit-testing easier.
+
+The main idea is that you will export your connected component as the default export and your dumb/presentational component as your named export; let's review the following example:
+
+```js
+export const LoginForm = ({ error, login }) => {
+  const [username, setUsername] = React.useState();
+
+  function onSubmit(event) {
+    event.preventDefault();
+
+    login(username);
+  }
+
+  return (
+    <form onSubmit={onSubmit}>
+      {error && <pre>{error}</pre>}
+      <input data-testid="input-username" value={username} onChange={e => setUsername(e.target.value)} />
+      <button type="submit" data-testid="button-login">Log In</button>
+    </form>
+  );
+};
+
+export default withCounter(LoginForm, {
+  stateSelectors: ['error'],
+  actionSelectors: ['login'],
+});
+```
+
+As you can see, the default export is the HOC that connects your `LoginForm` with the Context. You don't need to test this default export, as this library is already tested and you don't have to worry about its internal behavior.
+
+What you'd want to test is your `LoginForm` component isolated; this is why we are exporting it in addition to the default export.
+
+Following this approach you'll just need to create test-assertions to validate that your component behaves as expected with the received props; here is an example using `jest` and `react-testing-library`:
+
+```js
+import React from "react";
+import { render, fireEvent } from "@testing-library/react";
+import { LoginForm } from "./LoginForm";
+
+const mockData = {
+  error: null,
+  login: jest.fn()
+};
+
+describe("LoginForm", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("renders LoginForm component", () => {
+    const { queryByText, getByTestId } = render(<LoginForm {...mockData} />);
+
+    expect(queryByText(mockData.error)).toBeFalsy();
+    expect(getByTestId("input-username")).toBeTruthy();
+    expect(getByTestId("button-login")).toBeTruthy();
+  });
+
+  it("renders error", () => {
+    const error = "Some error";
+    const { getByText, getByTestId } = render(<LoginForm {...mockData} error={error} />);
+
+    expect(getByText(error)).toBeTruthy();
+    expect(getByTestId("input-username")).toBeTruthy();
+    expect(getByTestId("button-login")).toBeTruthy();
+  });
+
+  it("triggers login fn", () => {
+    const { getByTestId } = render(<LoginForm {...mockData} />);
+
+    fireEvent.click(getByTestId("button-login"));
+
+    expect(mockData.login).toHaveBeenCalled();
+  });
+});
+```
 
 
 ## Problems or Suggestions
