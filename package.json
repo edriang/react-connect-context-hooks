@@ -32,7 +32,12 @@
     "deploy": "gh-pages -d examples/todomvc/build"
   },
   "release": {
-    "analyzeCommits": "semantic-release-conventional-commits",
+    "analyzeCommits": {
+      "path": "semantic-release-conventional-commits",
+      "majorTypes": ["major", "breaking"],
+      "minorTypes": ["feat", "minor"],
+      "patchTypes": ["fix", "patch"]
+    },
     "verifyConditions": [
       "@semantic-release/changelog",
       "@semantic-release/npm",
