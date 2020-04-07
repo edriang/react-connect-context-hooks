@@ -36,7 +36,7 @@
       "path": "semantic-release-conventional-commits",
       "majorTypes": ["major", "breaking"],
       "minorTypes": ["feat", "minor"],
-      "patchTypes": ["fix", "patch"]
+      "patchTypes": ["fix", "patch", "docs"]
     },
     "verifyConditions": [
       "@semantic-release/changelog",
