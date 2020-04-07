@@ -1,6 +1,6 @@
 {
   "name": "react-connect-context-hooks",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "Lightweight redux-like connect bindings which uses useReducer + useContext internally.",
   "keywords": [
     "react",
@@ -34,9 +34,19 @@
   "release": {
     "analyzeCommits": {
       "path": "semantic-release-conventional-commits",
-      "majorTypes": ["major", "breaking"],
-      "minorTypes": ["feat", "minor"],
-      "patchTypes": ["fix", "patch", "docs"]
+      "majorTypes": [
+        "major",
+        "breaking"
+      ],
+      "minorTypes": [
+        "feat",
+        "minor"
+      ],
+      "patchTypes": [
+        "fix",
+        "patch",
+        "docs"
+      ]
     },
     "verifyConditions": [
       "@semantic-release/changelog",
