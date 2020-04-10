@@ -23,6 +23,7 @@
     - [Benefits of using Context](#benefits-of-using-context)
     - [Testing](#testing)
         - [Testing your connected components with HOC](#testing-your-connected-components-with-hoc)
+        - [Testing components connected with useContext](#testing-components-connected-with-usecontext)
     - [Problems or Suggestions](#problems-or-suggestions)
     - [License](#license)
 
@@ -671,44 +672,147 @@ What you'd want to test is your `LoginForm` component isolated; this is why we a
 Following this approach you'll just need to create test-assertions to validate that your component behaves as expected with the received props; here is an example using `jest` and `react-testing-library`:
 
 ```js
-import React from "react";
-import { render, fireEvent } from "@testing-library/react";
-import { LoginForm } from "./LoginForm";
+import React from 'react';
+import { render, fireEvent } from '@testing-library/react';
+import { LoginForm } from './LoginForm';
 
 const mockData = {
   error: null,
   login: jest.fn()
 };
 
-describe("LoginForm", () => {
+describe('LoginForm', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it("renders LoginForm component", () => {
+  it('renders LoginForm component', () => {
     const { queryByText, getByTestId } = render(<LoginForm {...mockData} />);
 
     expect(queryByText(mockData.error)).toBeFalsy();
-    expect(getByTestId("input-username")).toBeTruthy();
-    expect(getByTestId("button-login")).toBeTruthy();
+    expect(getByTestId('input-username')).toBeTruthy();
+    expect(getByTestId('button-login')).toBeTruthy();
   });
 
-  it("renders error", () => {
-    const error = "Some error";
+  it('renders error', () => {
+    const error = 'Some error';
     const { getByText, getByTestId } = render(<LoginForm {...mockData} error={error} />);
 
     expect(getByText(error)).toBeTruthy();
-    expect(getByTestId("input-username")).toBeTruthy();
-    expect(getByTestId("button-login")).toBeTruthy();
+    expect(getByTestId('input-username')).toBeTruthy();
+    expect(getByTestId('button-login')).toBeTruthy();
   });
 
-  it("triggers login fn", () => {
+  it('triggers login fn', () => {
     const { getByTestId } = render(<LoginForm {...mockData} />);
 
-    fireEvent.click(getByTestId("button-login"));
+    fireEvent.click(getByTestId('button-login'));
 
     expect(mockData.login).toHaveBeenCalled();
   });
+});
+```
+
+### Testing components connected with useContext
+
+As explained in the previous section, the HOC is the recommended way for accessing your Context through components; but, if for any reason you decide to use the `useContext` approach we got you covered.
+
+Consider the following example file:
+
+```js
+// CounterWithHooks.tsx
+
+import React from 'react';
+
+import { useCounter } from './store';
+
+const Counter: React.FC = () => {
+    const { count, increment, decrement } = useCounter({
+        stateSelectors: ['count'],
+        actionSelectors: ['increment', 'decrement'],
+    });
+    const [amount, setAmount] = React.useState(1);
+
+    const updateAmount = (event: any) => {
+        setAmount(parseInt(event.target.value));
+    }
+
+    return (
+        <div>
+            <h1>Counter Component</h1>
+            <p>
+                <b>Amount:</b>
+                <input type="number" value={amount} onChange={updateAmount} />
+            </p>
+            <p>
+                <b>Count: </b>
+                <span>{count}</span>
+            </p>
+            <hr />
+            <button onClick={() => decrement(amount)}>Decrement</button>
+            <button onClick={() => increment(amount)}>Increment</button>
+        </div>
+    )
+}
+
+export default Counter;
+```
+
+As you can notice, this component is accessing directly the Context values using the `useCounter` hook (check `CounterProvider.tsx` example).
+
+As it uses `useContext` internally we need to provide the component with a Context; for this purpose, we can use `withMockProvider` utility function.
+
+`withMockProvider` receives the `Provider` component (the one created with `createContextProvider`) and a `ReactNode`; it returns a `MockProvider` component which can be used to provide the Context values to your component. The `MockProvider` component accepts two properties: `state` and `actions`.
+
+Take a look at the following test file:
+
+```js
+// `CounterWithHooks.test.tsx`
+
+import React from 'react';
+import { render, fireEvent } from '@testing-library/react';
+import { withMockProvider } from 'react-connect-context-hooks';
+
+import CounterProvider from './store/CounterProvider';
+import Counter from './CounterWithHooks';
+
+const MockProvider = withMockProvider(CounterProvider, <Counter />);
+const mockedState = {
+    count: 999,
+};
+const mockedActions = {
+    increment: jest.fn(),
+    decrement: jest.fn(),
+};
+
+describe('Counter', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('renders counter component', () => {
+        const { getByText } = render(<MockProvider state={mockedState} actions={mockedActions} />);
+
+        expect(getByText(String(mockedState.count))).toBeTruthy();
+    });
+
+    it('calls increment when press increment button', () => {
+        const { getByText } = render(<MockProvider state={mockedState} actions={mockedActions} />);
+        const button = getByText('Increment');
+
+        fireEvent.click(button);
+
+        expect(mockedActions.increment).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls decrement when press decrement button', () => {
+        const { getByText } = render(<MockProvider state={mockedState} actions={mockedActions} />);
+        const button = getByText('Decrement');
+
+        fireEvent.click(button);
+
+        expect(mockedActions.decrement).toHaveBeenCalledTimes(1);
+    });
 });
 ```
 
