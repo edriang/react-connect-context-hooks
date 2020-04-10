@@ -1,3 +1,5 @@
+## [1.8.1](https://github.com/edriang/react-connect-context-hooks/compare/v1.8.0...v1.8.1) (2020-04-07)
+
 # [1.8.0](https://github.com/edriang/react-connect-context-hooks/compare/v1.7.0...v1.8.0) (2020-04-06)
 
 # [1.7.0](https://github.com/edriang/react-connect-context-hooks/compare/v1.6.1...v1.7.0) (2020-04-06)
