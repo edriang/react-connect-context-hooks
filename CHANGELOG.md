@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/edriang/react-connect-context-hooks/compare/v1.8.1...v1.9.0) (2020-04-10)
+
+
+### Features
+
+* adds withMockProvider to testUtils ([4734b6a](https://github.com/edriang/react-connect-context-hooks/commit/4734b6a65bd159b99a32a0834c6fdf317ab8747e))
+
 ## [1.8.1](https://github.com/edriang/react-connect-context-hooks/compare/v1.8.0...v1.8.1) (2020-04-07)
 
 # [1.8.0](https://github.com/edriang/react-connect-context-hooks/compare/v1.7.0...v1.8.0) (2020-04-06)
