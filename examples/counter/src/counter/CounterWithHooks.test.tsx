@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import { withMockProvider } from 'react-connect-context-hooks';
+import { createMockProvider } from 'react-connect-context-hooks';
 
 import CounterProvider from './store/CounterProvider';
 import Counter from './CounterWithHooks';
 
-const MockProvider = withMockProvider(CounterProvider, <Counter />);
+const MockProvider = createMockProvider(CounterProvider, <Counter />);
 const mockedState = {
     count: 999,
 };

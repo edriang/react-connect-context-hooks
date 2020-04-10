@@ -760,9 +760,9 @@ export default Counter;
 
 As you can notice, this component is accessing directly the Context values using the `useCounter` hook (check `CounterProvider.tsx` example).
 
-As it uses `useContext` internally we need to provide the component with a Context; for this purpose, we can use `withMockProvider` utility function.
+As it uses `useContext` internally we need to provide the component with a Context; for this purpose, we can use `createMockProvider` utility function.
 
-`withMockProvider` receives the `Provider` component (the one created with `createContextProvider`) and a `ReactNode`; it returns a `MockProvider` component which can be used to provide the Context values to your component. The `MockProvider` component accepts two properties: `state` and `actions`.
+`createMockProvider` receives the `Provider` component (the one created with `createContextProvider`) and a `ReactNode`; it returns a `MockProvider` component which can be used to provide the Context values to your component. The `MockProvider` component accepts two properties: `state` and `actions`.
 
 Take a look at the following test file:
 
@@ -771,12 +771,12 @@ Take a look at the following test file:
 
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import { withMockProvider } from 'react-connect-context-hooks';
+import { createMockProvider } from 'react-connect-context-hooks';
 
 import CounterProvider from './store/CounterProvider';
 import Counter from './CounterWithHooks';
 
-const MockProvider = withMockProvider(CounterProvider, <Counter />);
+const MockProvider = createMockProvider(CounterProvider, <Counter />);
 const mockedState = {
     count: 999,
 };

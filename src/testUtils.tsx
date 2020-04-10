@@ -3,7 +3,7 @@ import React from 'react';
 import { getProviderContext } from './createContextProvider';
 import { KeyValue } from './typings';
 
-function withMockProvider(Provider: any, Component: React.ReactNode) {
+function createMockProvider(Provider: any, Component: React.ReactNode) {
     const Context: React.Context<any> = getProviderContext(Provider);
 
     return ({ state = {}, actions = {} }: { state: KeyValue, actions: KeyValue }) => (
@@ -14,5 +14,5 @@ function withMockProvider(Provider: any, Component: React.ReactNode) {
 }
 
 export {
-    withMockProvider,
+    createMockProvider,
 };
