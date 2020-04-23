@@ -1,4 +1,5 @@
 import React from 'react';
+import { createContext, isEqualShallow } from 'use-context-selection';
 
 import {
     KeyValue,
@@ -11,13 +12,12 @@ import { getMergedProps, normalizedContextOptions } from './connectContext';
 
 const providerContextMap = new Map<CustomProvider, React.Context<any>>();
 
-
 function createContextProvider(reducer: React.Reducer<any, any>, initialState: KeyValue, actionCreators: ActionCreators): CreateContextProviderReturn;
 
 function createContextProvider(initialState: KeyValue, actionCreators: ActionCreators): CreateContextProviderReturn
 
 function createContextProvider(...args: any[]): CreateContextProviderReturn {
-    const Context = React.createContext({});
+    const Context = createContext({}, customIsEqualShallow);
     const Provider = ({ onInit, ...props }: KeyValue) => {
         // TODO: add better typing
         const contextValue = React.useRef<any>({});
@@ -91,6 +91,11 @@ function getProviderContext(Provider: CustomProvider): React.Context<any> {
         throw `Context not found for Provider ${Provider}`;
     }
     return Context;
+}
+
+const customIsEqualShallow = (stateA: KeyValue[], stateB: KeyValue[]) => {
+    // [0] is state values, [1] ar action creators
+    return isEqualShallow(stateA[0], stateB[0]);
 }
 
 export default createContextProvider;

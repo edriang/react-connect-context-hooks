@@ -1,6 +1,7 @@
 const ACTIONS = {
     INCREMENT: Symbol('INCREMENT'),
     DECREMENT: Symbol('DECREMENT'),
+    SET_AMOUNT: Symbol('SET_AMOUNT'),
 };
 
 const incrementAction = (dispatch: any) => (amount: number) => {
@@ -17,8 +18,21 @@ const decrementAction = (dispatch: any) => (amount: number) => {
     });
 }
 
+const setAmountAction = (dispatch: any) => (amount: number) => {
+    dispatch({
+        type: ACTIONS.SET_AMOUNT,
+        payload: { amount },
+    });
+}
+
+const actions = {
+    increment: incrementAction,
+    decrement: decrementAction,
+    setAmount: setAmountAction,
+};
+
+export default actions;
+
 export {
     ACTIONS,
-    incrementAction,
-    decrementAction,
 };

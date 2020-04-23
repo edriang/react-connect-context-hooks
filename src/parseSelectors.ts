@@ -52,7 +52,9 @@ function executeParsedSelectors(parsedSelectors: any, data: any, props: any = {}
     const selections = {};
 
     for (let key in parsedSelectors) {
-        selections[key] = parsedSelectors[key](data, props);
+        try {
+            selections[key] = parsedSelectors[key](data, props);
+        } catch (e) {}
     }
 
     return selections;

@@ -4,10 +4,14 @@
 
 - [react-connect-context-hooks](#react-connect-context-hooks)
     - [Install](#install)
-    - [Demo App](#demo-app)
     - [What?](#what)
     - [Why?](#why)
     - [How? (Example)](#how-example)
+        - [Provider](#provider)
+        - [Connect using HOC](#connect-using-hoc)
+        - [Connect using hooks](#connect-using-hooks)
+    - [Demo App](#demo-app)
+    - [Examples](#examples)
         - [Actions](#actions)
         - [Reducer](#reducer)
     - [Selections](#selections)
@@ -35,10 +39,6 @@
 npm install --save react-connect-context-hooks
 ```
 
-## Demo App
-
-[https://edriang.github.io/react-connect-context-hooks](https://edriang.github.io/react-connect-context-hooks)
-
 ## What?
 
 `react-connect-context-hooks` allows you to implement a state-management solution using React.hooks, while leverages good practices and provide DRY code.
@@ -47,13 +47,17 @@ npm install --save react-connect-context-hooks
  - Splitting the `state` per feature-modules.
  - Defining `actionCreators` to dispatch actions (higher-order functions like `redux-thunk`).
  - Providing a `connect` HOC for selecting values from your state.
-- Computing derived data (like `reselect`).
+ - Computing derived data (like `reselect`).
 
  Also, enforces good practices for implementing state-management with hooks; e.g.:
  - Provides custom `Provider` HOC for wrapping your components.
  - Provides custom `useContext` hook for selecting what you need from the store (similar to the `connect` HOC mentioned above).
  - Provides different `selection` or mapping options for easily getting what you need from the `store`.
  - Prevents unnecessary re-renders implementing basic memoization on top of your components.
+
+Exciting new features:
+ - Since version 1.10.0 `react-connect-context-hooks` implements [`use-context-selection`](https://www.npmjs.com/package/use-context-selection) internally, so your selections using hooks will be as fast as they are now using HOC!! `use-context-selection` allows selecting from Context only what you need and then trigger a re-render on consumer components only when that data changes.
+
 
 ## Why?
 
@@ -68,6 +72,8 @@ This library allows you implementing good practices for your custom state-manage
 > *In this section, we will review the basic functionality provided by the library. The snippets are based on the example application located in `examples/counter`. For a more complete/advanced use-case take a look at `examples/todomvc`.*
 
 Let's go through this example by explaining what is happening on the different files:
+
+### Provider
 
 ```js
 /// CounterProvider.tsx
@@ -116,7 +122,9 @@ const App: React.FC = () => {
 export default App;
 ```
 
-Finally, use the `connected` HOC in your components code as follows:
+### Connect using HOC
+
+After creating and configuring your Provider you can connect your components with the Context using the HOC helper as follows:
 
 ```js
 /// CounterComponent.tsx
@@ -125,7 +133,7 @@ import React from 'react';
 
 import { withCounter } from './store/CounterProvider';
 
-const Counter: React.FC<CounterProps> = ({ count, increment, decrement }) => {
+const Counter: React.FC = ({ count, increment, decrement }) => {
   const [amount, setAmount] = React.useState(1);
 
   const updateAmount = (event: any) => {
@@ -166,22 +174,77 @@ In this example, we define a simple `Counter` component expects 3 properties: `c
  - `withCounter` is a HOC that allows connecting to `CounterContext`. 
  - this HOC function receives the `Counter` component and some options for selecting data from your `store` (check below how to define selectors).
 
-In general, using the `connected` HOC is recommended, but if you need to access the store's data from a hook you can use the `hook` helper; e.g.:
+
+### Connect using hooks
+
+In general, using the HOC helper is the recommended way to access your Context (for testing purposes and separations of concerns), but if desired you can also use the hook helper. Let's see how to recreate the same example as above using `useCounter` hook; e.g.:
 
 ```js
-/// useCountLogger.ts
+/// CounterComponent.tsx
 
-export default () => {
-    const { count } = useCounter({
-      stateSelectors: ['count'],
-    });
+import React from 'react';
+
+import { useCounter } from './store/CounterProvider';
+
+const Counter: React.FC = () => {
+  const [amount, setAmount] = React.useState(1);
+  const { count, increment, decrement } = useCounter({
+    stateSelectors: ['count'],
+    actionSelectors: ['increment', 'decrement'],
+  });
   
-    console.warn(`Count is: ${count}`);
+  const updateAmount = (event: any) => {
+    setAmount(parseInt(event.target.value));
+  }
+
+  return (
+    <div>
+      <h1>Counter Component</h1>
+      <p>
+        <b>Amount:</b>
+        <input type="number" value={amount} onChange={updateAmount} />
+      </p>
+      <p>
+        <b>Count: </b>
+        <span>{count}</span>
+      </p>
+      <hr />
+      <button onClick={() => decrement(amount)}>Decrement</button>
+      <button onClick={() => increment(amount)}>Increment</button>
+    </div>
+  )
 }
 
+export default Counter;
 ```
 
-`useCounter` receives the same `options` object as the HOC, so you can select only what you need from the store.
+`useCounter` receives the same `options` object as the HOC helper, so you can select only what you need from the store.
+
+## Demo App
+
+[https://edriang.github.io/react-connect-context-hooks](https://edriang.github.io/react-connect-context-hooks)
+
+
+## Examples
+
+Check these examples to better understand the library and get inspiration to write your next awesome app!
+
+- **Counter App**
+
+This is a simple Counter application; it uses a reducer to manage state and connects components to the store using the hooks helpers. 
+
+[https://github.com/edriang/react-connect-context-hooks/tree/master/examples/counter](https://github.com/edriang/react-connect-context-hooks/tree/master/examples/counter)
+
+- **Todo MVC**
+
+This is a more complex and complete App; these are some of the features it uses:
+- Stores the application data on multiple Contexts, each one with its own state and actions.
+- Merges all context into a single StoreProvider for easier access.
+- Uses `onInit` prop to fetch initial data when the Provider renders for the first time.
+- Connects components to the store using HOC helpers.
+- Derives state using `computeSelectors`.
+
+[https://github.com/edriang/react-connect-context-hooks/tree/master/examples/counter](https://github.com/edriang/react-connect-context-hooks/tree/master/examples/counter)
 
 
 ### Actions
@@ -636,7 +699,7 @@ Then, you can use `selectors` to access specific pieces of your state and trust 
 
 ### Testing your connected components with HOC
 
-Using the HOC is the recommended way to connect your components with your Context, not only for the performance improvements but also because makes unit-testing easier.
+Using the HOC is the recommended way to connect your components with your Context because it makes unit-testing easier.
 
 The main idea is that you will export your connected component as the default export and your dumb/presentational component as your named export; let's review the following example:
 
@@ -714,8 +777,6 @@ describe('LoginForm', () => {
 ```
 
 ### Testing components connected with useContext
-
-As explained in the previous section, the HOC is the recommended way for accessing your Context through components; but, if for any reason you decide to use the `useContext` approach we got you covered.
 
 Consider the following example file:
 

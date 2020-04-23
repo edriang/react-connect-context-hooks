@@ -22,9 +22,7 @@ export default {
     }
   ],
   plugins: [
-    external({
-      includeDependencies: true,
-    }),
+    external(),
     resolve(),
     typescript({
       rollupCommonJSResolveHack: true,

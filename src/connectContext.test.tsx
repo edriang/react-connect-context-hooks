@@ -48,41 +48,6 @@ beforeEach(() => {
     [CounterProvider, CounterContext] = createContextProvider(reducer, mockState, actions);
 });
 
-describe('createContextProvider', () => {
-
-    it('creates a Context and children have access to its values', () => {
-        const { getByText } = render(
-            <CounterProvider>
-                <CounterContext.Consumer>
-                    {({ state }: any) => state.testProp}
-                </CounterContext.Consumer>
-            </CounterProvider>
-        );
-
-        expect(getByText(mockState.testProp)).toBeTruthy();
-    });
-
-    it('updates component after executing an action', () => {
-        const amount = 10;
-        const { getByTestId, getByText,  } = render(
-            <CounterProvider>
-                <CounterContext.Consumer>
-                    {({ state, actions }: any) => (
-                        <CountComponent count={state.count} increment={actions.increment} amount={amount} />
-                    )}
-                </CounterContext.Consumer>
-            </CounterProvider>
-        );
-        const button = getByTestId('button');
-
-        act(() => {
-            fireEvent.click(button);
-        });
-
-        expect(getByText(amount.toString())).toBeTruthy();
-    });
-});
-
 describe('connectContextFactory', () => {
     let withCounter: any;
     const amount = 10;

@@ -59,6 +59,9 @@
       "@semantic-release/git"
     ]
   },
+  "dependencies": {
+    "use-context-selection": "^1.4.0"
+  },
   "peerDependencies": {
     "@types/react": "^16.8",
     "react": "^16.8.0",
