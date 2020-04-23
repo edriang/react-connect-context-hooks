@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/edriang/react-connect-context-hooks/compare/v1.9.1...v1.10.0) (2020-04-23)
+
+
+### Features
+
+* use-context-selection, updates examples and doc ([c871e65](https://github.com/edriang/react-connect-context-hooks/commit/c871e657121766173d4f1a5c2b5be037fccaa306))
+
 ## [1.9.1](https://github.com/edriang/react-connect-context-hooks/compare/v1.9.0...v1.9.1) (2020-04-10)
 
 # [1.9.0](https://github.com/edriang/react-connect-context-hooks/compare/v1.8.1...v1.9.0) (2020-04-10)
