@@ -3,33 +3,32 @@
 <!-- TOC -->
 
 - [react-connect-context-hooks](#react-connect-context-hooks)
-    - [Install](#install)
-    - [What?](#what)
-    - [Why?](#why)
-    - [How? (Example)](#how-example)
-        - [Provider](#provider)
-        - [Connect using HOC](#connect-using-hoc)
-        - [Connect using hooks](#connect-using-hooks)
-    - [Demo App](#demo-app)
-    - [Examples](#examples)
-        - [Actions](#actions)
-        - [Reducer](#reducer)
-    - [Selections](#selections)
-        - [Selections using Array](#selections-using-array)
-        - [Selections using Object](#selections-using-object)
-        - [Selections using Function](#selections-using-function)
-    - [Other Use-cases](#other-use-cases)
-        - [Fetching initial data](#fetching-initial-data)
-        - [Combining Contexts](#combining-contexts)
-        - [Merged Store](#merged-store)
-        - [Deriving State](#deriving-state)
-        - [Store without reducer](#store-without-reducer)
-    - [Benefits of using Context](#benefits-of-using-context)
-    - [Testing](#testing)
-        - [Testing your connected components with HOC](#testing-your-connected-components-with-hoc)
-        - [Testing components connected with useContext](#testing-components-connected-with-usecontext)
-    - [Problems or Suggestions](#problems-or-suggestions)
-    - [License](#license)
+  - [Install](#install)
+  - [What?](#what)
+  - [Why?](#why)
+  - [How? Example](#how-example)
+    - [Provider](#provider)
+    - [Connect using HOC](#connect-using-hoc)
+    - [Connect using hooks](#connect-using-hooks)
+  - [Demo App](#demo-app)
+  - [Examples](#examples)
+    - [Actions](#actions)
+    - [Reducer](#reducer)
+  - [Selections](#selections)
+    - [Selections using Array](#selections-using-array)
+    - [Selections using Object](#selections-using-object)
+    - [Selections using Function](#selections-using-function)
+  - [Other Use-cases](#other-use-cases)
+    - [Fetching initial data](#fetching-initial-data)
+    - [Combining Contexts](#combining-contexts)
+    - [Merged Store](#merged-store)
+    - [Deriving State](#deriving-state)
+    - [Store without reducer](#store-without-reducer)
+  - [Benefits of using Context](#benefits-of-using-context)
+  - [Testing](#testing)
+    - [Testing your connected components with HOC](#testing-your-connected-components-with-hoc)
+    - [Testing components connected with useContext](#testing-components-connected-with-usecontext)
+  - [Problems or Suggestions](#problems-or-suggestions)
 
 <!-- /TOC -->
 
@@ -881,7 +880,3 @@ describe('Counter', () => {
 ## Problems or Suggestions
 
 Please feel free to open an issue on [github](https://github.com/edriang/react-connect-context-hooks).
-
-## License
-
-MIT © [Adrián Gallardo](https://github.com/edriang)

@@ -13,10 +13,14 @@ const App: React.FC = () => {
         <CounterProvider>
           <div>
             <h1>Counter App</h1>
-            <Amount />
-            <Counter />
-            <hr />
-            <CounterControls />
+            <Counter>
+              <>
+                <Amount>
+                  <hr />
+                  <CounterControls />
+                </Amount>
+              </>
+            </Counter>
           </div>
         </CounterProvider>
       </header>
