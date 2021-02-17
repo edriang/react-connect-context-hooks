@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/edriang/react-connect-context-hooks/compare/v1.10.0...v1.10.1) (2021-02-17)
+
+
+### Bug Fixes
+
+* MergedStore allows updating child component ([3c7f5a5](https://github.com/edriang/react-connect-context-hooks/commit/3c7f5a5f7ab860538d3ae03db60735e86683cc5a))
+
 # [1.10.0](https://github.com/edriang/react-connect-context-hooks/compare/v1.9.1...v1.10.0) (2020-04-23)
 
 
