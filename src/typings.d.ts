@@ -49,3 +49,5 @@ export type ConnectContextFactory = (Component: CustomComponent, options: Connec
 
 export type ProviderCollection = CustomProvider[] | {[key: string]: CustomProvider}
 export type ContextCollection = React.Context<any>[] | {[key: string]: React.Context<any>}
+
+export type OnInit = [ConnectContextOptions, (params: any) => void]

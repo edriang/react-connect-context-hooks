@@ -3,7 +3,12 @@ import React from "react";
 import { mergedConnectContextFactory, useMergedConnectedContextFactory } from './connectContext';
 import { getProviderContext } from './createContextProvider';
 
-import { CustomProvider, ConnectContextFactory, KeyValue, ConnectContextOptions, ProviderCollection, ContextCollection } from "./typings";
+import { CustomProvider, ConnectContextFactory, KeyValue, ConnectContextOptions, ProviderCollection, ContextCollection, OnInit } from "./typings";
+
+type MergedStoreProps = {
+    children: React.ReactNode;
+    onInit?: OnInit;
+}
 
 const DefaultChild = ({ children }: any) => children;
 
@@ -24,11 +29,15 @@ function createMergedStore(providers: ProviderCollection): [CustomProvider, Conn
     const withStore = mergedConnectContextFactory(contexts);
     const useStore = useMergedConnectedContextFactory(contexts);
 
-    const MergedStore = (props: KeyValue) => {
-        // TODO: this needs to be connected or can just read the merged values from the context similar to createContextProvider onInit
-        const Child = props.onInit ?  getConnectedChild(withStore, props.onInit) : DefaultChild;
+    const MergedStore = ({ children, onInit }: MergedStoreProps) => {
 
-        let wrapper: any = <Child {...props} />;
+        // onInit is supposed to be run only the first time, so we store a reference to its initial value and never update again
+        const [onInitFn] = React.useState(onInit);
+
+        // TODO: this needs to be connected or can just read the merged values from the context similar to createContextProvider onInit
+        const Child = React.useMemo(() => onInitFn ?  getConnectedChild(withStore, onInitFn) : DefaultChild, []);
+
+        let wrapper: any = <Child children={children} />;
 
         Object.values(providers).forEach((Provider) => {
             const previousWrapper = wrapper;
@@ -36,8 +45,8 @@ function createMergedStore(providers: ProviderCollection): [CustomProvider, Conn
             wrapper = <Provider>{ previousWrapper }</Provider>
         });
 
-        return React.useMemo(() => wrapper, []);
-    }
+        return wrapper;
+    };
 
     return [
         MergedStore,
