@@ -17,9 +17,26 @@ const selection = {
   actionSelectors: ['todos.fetchTodos'],
 }
 
+const AppShell = () => {
+  const [count, setCount] = React.useState(0);
+
+  const onClick = () => setCount(prevCount => {
+    const newCount = prevCount + 1;
+
+    console.log('new count', newCount);
+
+    return newCount;
+  });
+
+  return (
+    <StoreProvider onInit={[selection, onInit]}>
+      <button onClick={onClick}>Count {count}</button>
+      <App />
+    </StoreProvider>
+  )
+}
+
 render(
-  <StoreProvider onInit={[selection, onInit]}>
-    <App />
-  </StoreProvider>,
+  <AppShell />,
   document.getElementById('root')
 )
