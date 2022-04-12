@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/edriang/react-connect-context-hooks/compare/v1.10.1...v1.11.0) (2022-04-12)
+
+
+### Features
+
+* updates peerDeeps for react v17 ([8a8759b](https://github.com/edriang/react-connect-context-hooks/commit/8a8759b41ac4050550ce104aba4470212747af7c))
+
 ## [1.10.1](https://github.com/edriang/react-connect-context-hooks/compare/v1.10.0...v1.10.1) (2021-02-17)
 
 
