@@ -1,6 +1,6 @@
 {
   "name": "react-connect-context-hooks",
-  "version": "1.10.1",
+  "version": "1.11.0",
   "description": "Lightweight redux-like connect bindings which uses useReducer + useContext internally.",
   "keywords": [
     "react",
@@ -60,12 +60,12 @@
     ]
   },
   "dependencies": {
-    "use-context-selection": "^1.4.0"
+    "use-context-selection": "^1.5.2"
   },
   "peerDependencies": {
-    "@types/react": "^16.8",
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0"
+    "@types/react": "^16.8.0||^17.0.0",
+    "react": "^16.8.0||^17.0.0",
+    "react-dom": "^16.8.0||^17.0.0"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^5.0.0",
@@ -73,16 +73,16 @@
     "@testing-library/react": "^9.4.0",
     "@types/jest": "^23.1.5",
     "@types/memoizee": "^0.4.3",
-    "@types/react": "^16.8",
-    "@types/react-dom": "^16.8",
+    "@types/react": "^17.0.44",
+    "@types/react-dom": "^17.0.15",
     "acorn": "^7.1.1",
     "babel-core": "^6.26.3",
     "babel-runtime": "^6.26.0",
     "cross-env": "^5.1.4",
     "gh-pages": "^1.2.0",
     "minimist": "^1.2.5",
-    "react": "^16.8",
-    "react-dom": "^16.4.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "react-scripts-ts": "^2.16.0",
     "rollup": "^0.62.0",
     "rollup-plugin-babel": "^3.0.7",
