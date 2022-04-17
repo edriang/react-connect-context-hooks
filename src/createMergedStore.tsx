@@ -12,11 +12,7 @@ type MergedStoreProps = {
 
 const DefaultChild = ({ children }: any) => children;
 
-// DEPRECATE: just use Object notation
 function getContextsFromProviderCollection(providers: ProviderCollection): ContextCollection {
-    if (providers instanceof Array) {
-        return providers.map(Provider => getProviderContext(Provider));
-    }
     return Object.keys(providers).reduce((contexts, key) => {
         contexts[key] = getProviderContext(providers[key]);
 

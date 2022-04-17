@@ -180,13 +180,13 @@ describe('mergedConnectContextFactory', () => {
 
     beforeEach(() => {
         [CounterProvider2, CounterContext2] = createContextProvider(reducer, secondMockState, {});
-        withBothContexts = mergedConnectContextFactory([CounterContext, CounterContext2]);
+        withBothContexts = mergedConnectContextFactory({ context1: CounterContext, context2: CounterContext2 });
     });
 
     it('loads values from both contexts', () => {
         const Component = ({testProp, testProp2}: any) => `${testProp}-${testProp2}`;
         const ComponentWithCounter = withBothContexts(Component, {
-            stateSelectors: ['testProp', 'testProp2']
+            stateSelectors: ['context1.testProp', 'context2.testProp2']
         });
 
         const { getByText } = render(
@@ -202,7 +202,7 @@ describe('mergedConnectContextFactory', () => {
 
     it('overrides first context value with second one', () => {
         const ComponentWithCounter = withBothContexts(MockComponent, {
-            stateSelectors: ['testProp', 'testProp2:testProp']
+            stateSelectors: ['context1.testProp', 'context2.testProp2:testProp']
         });
 
         const { getByText } = render(
@@ -219,7 +219,7 @@ describe('mergedConnectContextFactory', () => {
     it('overrides props with afterMerge callback', () => {
         const Component = ({testProp, testProp2}: any) => `${testProp}-${testProp2}`;
         const ComponentWithCounter = withBothContexts(Component, {
-            stateSelectors: ['testProp', 'testProp2'],
+            stateSelectors: ['context1.testProp', 'context2.testProp2'],
             afterMerge: (state: any) => ({
                 testProp: state.testProp.toUpperCase(),
                 testProp2: state.testProp2.toUpperCase(),
@@ -241,7 +241,7 @@ describe('mergedConnectContextFactory', () => {
     it('returns derived state', () => {
         const Component = ({textCombined}: any) => textCombined;
         const ComponentWithCounter = withBothContexts(Component, {
-            stateSelectors: ['testProp', 'testProp2'],
+            stateSelectors: ['context1.testProp', 'context2.testProp2'],
             computedSelectors: {
                 textCombined: [(testProp: string, testProp2: string) => `${testProp}-${testProp2}`, ['testProp', 'testProp2']],
             }
@@ -283,12 +283,12 @@ describe('useMergedConnectedContextFactory', () => {
 
     beforeEach(() => {
         [CounterProvider2, CounterContext2] = createContextProvider(reducer, secondMockState, {});
-        useBothContexts = useMergedConnectedContextFactory([CounterContext, CounterContext2]);
+        useBothContexts = useMergedConnectedContextFactory({ context1: CounterContext, context2: CounterContext2 });
     });
 
     it('loads values from both contexts', () => {
         const Component = getComponent({
-            stateSelectors: ['testProp', 'testProp2'],
+            stateSelectors: ['context1.testProp', 'context2.testProp2'],
         }, ['testProp', 'testProp2']);
         const { getByText } = render((
             <CounterProvider>
@@ -303,7 +303,7 @@ describe('useMergedConnectedContextFactory', () => {
 
     it('overrides first context value with second one', () => {
         const Component = getComponent({
-            stateSelectors: ['testProp', 'testProp2:testProp'],
+            stateSelectors: ['context1.testProp', 'context2.testProp2:testProp'],
         }, ['testProp']);
 
         const { getByText } = render(
@@ -319,7 +319,7 @@ describe('useMergedConnectedContextFactory', () => {
 
     it('returns derived state', () => {
         const Component = getComponent({
-            stateSelectors: ['testProp', 'testProp2'],
+            stateSelectors: ['context1.testProp', 'context2.testProp2'],
             computedSelectors: {
                 textCombined: [(testProp: string, testProp2: string) => `${testProp}-${testProp2}`, ['testProp', 'testProp2']],
             }

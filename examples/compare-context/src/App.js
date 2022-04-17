@@ -40,7 +40,7 @@ function App() {
         <p>Enter the number of rows you want to render</p>
 
         <div>
-          <input type="number" className="form-control input-number" value={numOfRows} onChange={setNumOfRows} />
+          <input type="number" className="form-control input-number" value={numOfRows} onChange={event => setNumOfRows(parseInt(event.target.value || 0))} />
         </div>
 
         <p>On the left side, each value is read directly from Context. On the right side, values are read from react-connect-context-hooks store.</p>

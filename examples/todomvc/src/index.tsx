@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import App from './main/components/App';
 
@@ -16,10 +16,11 @@ const onInit = ({ fetchTodos }: any) => {
 const selection = {
   actionSelectors: ['todos.fetchTodos'],
 }
+const container = document.getElementById('root');
+const root = createRoot(container!);
 
-render(
+root.render(
   <StoreProvider onInit={[selection, onInit]}>
     <App />
-  </StoreProvider>,
-  document.getElementById('root')
+  </StoreProvider>
 )

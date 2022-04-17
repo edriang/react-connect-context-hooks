@@ -1,3 +1,5 @@
+import { Context } from 'use-context-selector';
+
 export type KeyValue = {
     [key: string]: any;
 }
@@ -17,7 +19,7 @@ export type CustomProvider = CustomComponent;
 
 export type CreateContextProviderReturn = [
     CustomProvider,
-    React.Context<any>
+    Context<any>
 ]
 
 export type SelectorFunction = (state: KeyValue, props?: KeyValue) => KeyValue;
@@ -48,6 +50,6 @@ export type ConnectContextOptions = {
 export type ConnectContextFactory = (Component: CustomComponent, options: ConnectContextOptions) => React.FunctionComponent;
 
 export type ProviderCollection = CustomProvider[] | {[key: string]: CustomProvider}
-export type ContextCollection = React.Context<any>[] | {[key: string]: React.Context<any>}
+export type ContextCollection = {[key: string]: Context<any>}
 
 export type OnInit = [ConnectContextOptions, (params: any) => void]

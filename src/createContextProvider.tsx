@@ -1,5 +1,5 @@
 import React from 'react';
-import { createContext, isEqualShallow } from 'use-context-selection';
+import { createContext, Context } from 'use-context-selector';
 
 import {
     KeyValue,
@@ -10,14 +10,14 @@ import {
 import parseSelectors, { executeParsedSelectors as selectValues } from './parseSelectors';
 import { getMergedProps, normalizedContextOptions } from './connectContext';
 
-const providerContextMap = new Map<CustomProvider, React.Context<any>>();
+const providerContextMap = new Map<CustomProvider, Context<any>>();
 
 function createContextProvider(reducer: React.Reducer<any, any>, initialState: KeyValue, actionCreators: ActionCreators): CreateContextProviderReturn;
 
 function createContextProvider(initialState: KeyValue, actionCreators: ActionCreators): CreateContextProviderReturn
 
 function createContextProvider(...args: any[]): CreateContextProviderReturn {
-    const Context = createContext({}, customIsEqualShallow);
+    const Context = createContext<any>({});
     const Provider = ({ onInit, ...props }: KeyValue) => {
         // TODO: add better typing
         const contextValue = React.useRef<any>({});
@@ -56,7 +56,7 @@ function createContextProvider(...args: any[]): CreateContextProviderReturn {
         }
 
         return (
-            <Context.Provider value={{...contextValue.current}} {...props}></Context.Provider>
+            <Context.Provider value={{...contextValue.current}} children={props.children} {...props}></Context.Provider>
         );
     };
     providerContextMap.set(Provider, Context);
@@ -84,18 +84,13 @@ function createStateSetterDispatch(dispatch: React.Dispatch<any>, contextValue: 
     }
 }
 
-function getProviderContext(Provider: CustomProvider): React.Context<any> {
+function getProviderContext(Provider: CustomProvider): Context<any> {
     const Context = providerContextMap.get(Provider);
 
     if (!Context) {
         throw `Context not found for Provider ${Provider}`;
     }
     return Context;
-}
-
-const customIsEqualShallow = (stateA: KeyValue[], stateB: KeyValue[]) => {
-    // [0] is state values, [1] ar action creators
-    return isEqualShallow(stateA[0], stateB[0]);
 }
 
 export default createContextProvider;

@@ -34,9 +34,13 @@
 
 ## Install
 
+Install the library and peer-dependencies:
+
 ```bash
-npm install --save react-connect-context-hooks
+npm install --save react-connect-context-hooks scheduler
 ```
+
+**NOTE:** `scheduler` is a `peerDependency` from `use-context-selector`, which allows re-rendering only the affected components reading a modifying prop from the whole state. 
 
 ## What?
 
@@ -54,9 +58,8 @@ npm install --save react-connect-context-hooks
  - Provides different `selection` or mapping options for easily getting what you need from the `store`.
  - Prevents unnecessary re-renders implementing basic memoization on top of your components.
 
-Exciting new features:
- - Since version 1.10.0 `react-connect-context-hooks` implements [`use-context-selection`](https://www.npmjs.com/package/use-context-selection) internally, so your selections using hooks will be as fast as they are now using HOC!! `use-context-selection` allows selecting from Context only what you need and then trigger a re-render on consumer components only when that data changes.
-
+Other exiting features:
+ - When the state is updated, it only re-renders components directly reading from any of the modified props (instead of re-rendering all consumer components as Context do by default). This is achieved by implementing [`use-context-selector`](https://www.npmjs.com/package/use-context-selector) library internally.
 
 ## Why?
 

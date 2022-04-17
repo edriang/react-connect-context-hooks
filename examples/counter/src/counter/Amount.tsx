@@ -2,7 +2,11 @@ import React from 'react';
 
 import { useCounter } from './store';
 
-const Amount: React.FC = ({ children }) => {
+type Props = {
+    children: React.ReactNode;
+};
+
+const Amount: React.FC<Props> = ({ children }) => {
     const { amount, setAmount } = useCounter({
         stateSelectors: ['amount'],
         actionSelectors: ['setAmount'],
