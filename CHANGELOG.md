@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/edriang/react-connect-context-hooks/compare/v2.0.0...v2.1.0) (2022-04-17)
+
+
+### Features
+
+* adds support for React v18 ([663ab21](https://github.com/edriang/react-connect-context-hooks/commit/663ab21c278569ca49ff07f1008c6eb02e6339f8))
+
 # [2.0.0](https://github.com/edriang/react-connect-context-hooks/compare/v1.12.0...v2.0.0) (2022-04-17)
 
 
