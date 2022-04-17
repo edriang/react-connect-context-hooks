@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/edriang/react-connect-context-hooks/compare/v1.12.0...v2.0.0) (2022-04-17)
+
+
+### Features
+
+* adds support for React v18 ([a895665](https://github.com/edriang/react-connect-context-hooks/commit/a895665b0d895cec7475b254ba8c284595145c33))
+
+
+### BREAKING CHANGES
+
+* switched to use-context-selector library, which has additional peerDependency scheduler
+
 # [1.12.0](https://github.com/edriang/react-connect-context-hooks/compare/v1.11.0...v1.12.0) (2022-04-17)
 
 
