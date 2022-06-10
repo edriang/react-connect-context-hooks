@@ -91,7 +91,7 @@
     "rollup-plugin-peer-deps-external": "^2.2.0",
     "rollup-plugin-typescript2": "^0.17.0",
     "scheduler": "^0.21.0",
-    "semantic-release": "^17.0.4",
+    "semantic-release": "^19.0.3",
     "semantic-release-conventional-commits": "^2.0.1",
     "typescript": "^2.8.3"
   },
